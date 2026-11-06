@@ -1,0 +1,18 @@
+{
+  "Game-engine": {
+    "url": "https://github.com/Gachon-Murder-Mystery/Game-engine.git",
+    "commit": "be41210838a6b4eceb54ea2726641b3a6fc114af"
+  },
+  "Agent_Reasoning": {
+    "url": "https://github.com/Gachon-Murder-Mystery/Agent_Reasoning.git",
+    "commit": "4abf80fd41e1cd77f6ad652d6a4ef16618b2c3a9"
+  },
+  "GM_Agent_Society": {
+    "url": "https://github.com/Gachon-Murder-Mystery/GM_Agent_Society.git",
+    "commit": "66a0230ed467871f32fd2c042ef98adc87f00db9"
+  },
+  "org-profile": {
+    "url": "https://github.com/Gachon-Murder-Mystery/.github.git",
+    "commit": "34d96b410ab8bf5f1b3a5f86b831e0df9901e7e6"
+  }
+}

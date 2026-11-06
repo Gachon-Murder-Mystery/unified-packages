@@ -1,0 +1,26 @@
+# Credentials and local configuration
+.env
+.env.*
+!.env.example
+**/.git
+*.pem
+*.key
+# Runtime records and databases
+runs/
+**/runs/
+data/
+**/data/
+*.sqlite
+*.sqlite3
+*.db
+*.sqlite3-*
+*.db-*
+*.jsonl
+*.log
+/baseline.json
+/llm.json
+/smoke.json
+# Python caches
+__pycache__/
+*.py[cod]
+.venv/
