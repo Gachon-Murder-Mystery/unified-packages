@@ -1,3 +1,5 @@
+from pathlib import Path
+import json
 """Spec v1.3 GM policies (C1, C6) and scripted players (D3). Pure unit tests: no engine, no LLM, no network."""
 import random
 import unittest
@@ -31,13 +33,17 @@ def full_history(scores=None, games_per_job=1):
 
 class DataTests(unittest.TestCase):
     def test_extracted_data_matches_spec_and_design(self):
-        self.assertEqual(build_v12_data.build(), DATA, "v12_data.json is stale: run build_v12_data")
+        built = build_v12_data.build()   # FIX-A53: the v10 mission list is written by tools/build_v10_missions.py
+        self.assertEqual({k: v for k, v in built.items() if k not in ("missions", "provenance")},
+                         {k: v for k, v in DATA.items() if k not in ("missions", "provenance", "mission_reward")})
+        engine = json.loads((Path(__file__).resolve().parents[1] / "Game-engine" / "competitive_catalog.json").read_text(encoding="utf-8"))
+        self.assertEqual(DATA["missions"], engine["missions"])
         self.assertEqual(len(DATA["characters"]), 12)
-        self.assertEqual(len(DATA["missions"]), 58)
+        self.assertEqual(len(DATA["missions"]), 67)  # 58 + M52-M56 (FIX-A21) + I1-I4 (FIX-A53)
         self.assertEqual(len(set(DATA["mbti"])), 16)
         self.assertEqual([c["job_id"] for c in DATA["characters"]], list(range(12)))
         self.assertTrue(all(sum(c["stats"].values()) == 11 for c in DATA["characters"]))
-        known = set(DATA["jobs"]) | set(DATA["stat_tokens"]) | set("EISNTFJP")
+        known = set(DATA["jobs"]) | set(DATA["stat_tokens"])   # FIX-A53: no personality letters
         self.assertTrue(all(t in known for m in DATA["missions"] for t in m["easier"] + m["harder"]))
         designated = {m["id"]: m["designate"] for m in DATA["missions"] if m["designate"]}
         self.assertEqual(designated["O6"], "indirect_clues")
@@ -47,19 +53,18 @@ class DataTests(unittest.TestCase):
 class DifficultyTests(unittest.TestCase):
     missions = {m["id"]: m for m in DATA["missions"]}
 
-    def test_design_doc_examples(self):
-        stop_train = self.missions["O3"]  # 기준 중, 쉬워짐 기술자
-        self.assertEqual(effective_tier(stop_train, SHEETS[8], "ISTJ", DATA), "하")
-        self.assertEqual(effective_tier(stop_train, SHEETS[5], "ISTJ", DATA), "중")
-        detective = self.missions["M51"]
-        self.assertEqual(effective_tier(detective, SHEETS[0], "ESTJ", DATA, 5), "하")
-        self.assertIsNone(quantity_for(detective, "상", SHEETS[0], "ESTJ", DATA))  # 상 unreachable for 탐정
-        self.assertEqual(quantity_for(detective, "중", SHEETS[2], "ESTJ", DATA), 5)
+    def test_design_doc_examples(self):   # FIX-A53: job shifts stay, quantities and personality letters are gone
+        safe = self.missions["M45"]  # 기준 중, 쉬워짐 상속인
+        heir = next(c for c in SHEETS.values() if c["job"] == "상속인")
+        other = next(c for c in SHEETS.values() if c["job"] not in safe["easier"] + safe["harder"])
+        self.assertEqual(effective_tier(safe, heir, "ISTJ", DATA), "하")
+        self.assertEqual(effective_tier(safe, other, "ISTJ", DATA), "중")
+        self.assertNotIn("quantity", self.missions["M51"])
 
-    def test_both_conditions_keep_base(self):
-        secret = self.missions["O2"]  # 쉬워짐 사기꾼·I, 어려워짐 사업가·E
-        self.assertEqual(effective_tier(secret, SHEETS[3], "ESTP", DATA), "중")
-        self.assertEqual(effective_tier(secret, SHEETS[3], "ISTP", DATA), "하")
+    def test_both_conditions_keep_base(self):   # FIX-A53: the personality never shifts a mission
+        for m in self.missions.values():
+            tiers = {effective_tier(m, SHEETS[3], mbti, DATA) for mbti in DATA["mbti"]} if m.get("base") else {None}
+            self.assertEqual(len(tiers), 1, m["id"])
 
 
 class RolePolicyTests(unittest.TestCase):
@@ -157,12 +162,9 @@ class MissionPolicyTests(unittest.TestCase):
         self.assertFalse(chosen & {"M47", "M15", "O6"})  # no NPC, too few known indirect clues
         plan = plan_missions(self.players, self.characters, self.candidates([{**slots, "중": ["M51"]}] * 4), seed=7,
                              indirect_clue_ids=self.clues)
-        for aid, entries in plan["sub_missions"].items():
-            m51 = next(e for e in entries if e["mission_id"] == "M51")
-            sheet = SHEETS[next(p for p in self.players if p["agent_id"] == aid)["character_id"]]
-            # 탐정·관찰5 shift one step easier: base 상 (N=8) becomes 중; N=3/5 would land on 하.
-            expected = 8 if sheet["job"] == "탐정" or sheet["stats"]["observe"] == 5 else 5
-            self.assertEqual(m51["params"]["N"], expected)
+        for aid, entries in plan["sub_missions"].items():   # FIX-A53: one fixed quantity, no N parameter
+            m51 = [e for e in entries if e["mission_id"] == "M51"]
+            self.assertTrue(all(e["params"] == {} for e in m51))
 
     def test_self_conflict_is_avoided(self):
         slots = {"하": ["O7", "M23", "M09"], "중": ["M48", "M01", "M02"], "상": ["M49", "M12", "M18"]}
@@ -173,6 +175,25 @@ class MissionPolicyTests(unittest.TestCase):
         for entries in plan["sub_missions"].values():
             ids = [e["mission_id"] for e in entries]
             self.assertFalse(any(conflicts(a, b) for a in ids for b in ids if a < b))
+
+
+class BlockTargetTests(unittest.TestCase):
+    """[FIX-C23] I1 names only a count mission the engine lists as blockable; with none anywhere it becomes I2."""
+    def test_i1_names_a_blockable_mission(self):
+        from .mission_policy import _interference
+        catalog = {m["id"]: m for m in load_data()["missions"]}
+        players = [{"agent_id": f"a{i}", "character_id": i} for i in range(12)]
+        chosen = {f"a{i}": {"하": "M20", "중": "M36" if i % 3 == 0 else "O4", "상": "O5"} for i in range(12)}
+        for seed in range(20):
+            out = _interference(chosen, players, catalog, ["p"] * 8, random.Random(seed), ["I1"], ["M36"])
+            self.assertTrue(out)
+            for (aid, mid), target in out.items():
+                self.assertEqual(mid, "I1")
+                self.assertEqual(target["mission_id"], "M36")
+                self.assertEqual(chosen[target["player"]]["중"], "M36")
+        none = {a: {"하": "M20", "중": "O4", "상": "O5"} for a in chosen}
+        out = _interference(none, players, catalog, ["p"] * 8, random.Random(1), ["I1"], ["M36"])
+        self.assertEqual({mid for _, mid in out}, {"I2"})
 
 
 class MetricsTests(unittest.TestCase):
@@ -260,18 +281,19 @@ class PlayerTests(unittest.TestCase):
         self.assertEqual(p.respond({"asker_id": "p01", "hypothesis": {"suspect": 1, "weapon": 1, "place": 1},
                                     "successes": 2})["form"], "definite")
         q = self.player()
-        # Holding a clue on every hypothesis candidate leaves no true ambiguous statement: indirect clues fill in.
-        q.ingest({"clues": [definite("s0", "suspect", 0), definite("w0", "weapon", 0), definite("r0", "place", 0),
-                            {"id": "near", "kind": "indirect", "type": "character_room", "character": 4, "room": 6},
+        # [FIX-A18] A pair statement needs a definite anchor. Holding only indirect clues leaves no true
+        # ambiguous statement, so indirect clues fill in, the least connecting first.
+        q.ingest({"clues": [{"id": "near", "kind": "indirect", "type": "character_room", "character": 4, "room": 6},
                             {"id": "far", "kind": "indirect", "type": "character_room", "character": 5, "room": 1}]})
         q.asked_me["p02"] = [{"suspect": 9, "weapon": 1, "place": 6}]  # p02 has looked at place 6
         hyp = {"suspect": 0, "weapon": 0, "place": 0}
         answer = q.respond({"asker_id": "p02", "hypothesis": hyp, "successes": 1})
         self.assertEqual(answer["statements"], [{"kind": "indirect", "clue_id": "far",
                                                  "narration": q.narrate({"type": "character_room", "room": 1})}])
-        hyp_with_gap = {"suspect": 7, "weapon": 0, "place": 0}
-        answer = q.respond({"asker_id": "p02", "hypothesis": hyp_with_gap, "successes": 1})
-        self.assertEqual(answer["statements"][0], {"kind": "ambiguous", "category": "suspect", "candidate": 7})
+        # with a definite anchor the answer is a pair exclusion with a hypothesis candidate of another category
+        q.ingest({"clues": [definite("s0", "suspect", 0)]})
+        answer = q.respond({"asker_id": "p02", "hypothesis": {"suspect": 7, "weapon": 2, "place": 3}, "successes": 1})
+        self.assertEqual(answer["statements"][0], {"kind": "ambiguous", "pair": {"suspect": 0, "weapon": 2}})
 
     def test_narration_omits_and_never_concludes(self):
         p = self.player()

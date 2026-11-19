@@ -80,7 +80,7 @@ HTTP POST `/integration/v1/...`, `X-GM-Client: local`, 역할별 capability는 �
 | --- | --- |
 | 이동 | move `{room}` / stay `{}` |
 | 탐문·탐색 | explore `{}` 또는 시체 `{target_id}` / prepare `{}` / pass `{}` |
-| 질문 계열 | question `{target_id: 캐릭터정수, approach: question|interrogate|threaten|negotiate, hypothesis:{suspect,weapon,place}}` |
+| 질문 계열 | question `{target_id: 캐릭터정수, approach: question|interrogate|threaten|persuade(설득, 구 negotiate), hypothesis:{suspect,weapon,place}}` |
 | 추리 | accuse `{suspect,weapon,place,output_tokens,elapsed_seconds?}` / pass `{}` |
 
 질문 등록은 즉시 pending을 반환한다. 질문자는 같은 action_id를 재전송하거나 `agent/result`로
@@ -118,7 +118,7 @@ HTTP POST `/integration/v1/...`, `X-GM-Client: local`, 역할별 capability는 �
 
 - `relationships/graph`: 본인 outgoing 11개만. 관계성 미션은 반대 방향을 검사하고 진행 수치를 숨긴다.
 - 운영자 `games/observe`: 전체 방향 그래프. `/competition`은 선택한 source의 11개 edge를 그린다.
-- 질문/교섭 기준선, F NPC의 확실 응답 확률, E/I 변화량, 교섭 불이행에 실제로 연결된다.
+- 질문/설득 기준선, F NPC의 확실 응답 확률, E/I 변화량, 교섭 불이행에 실제로 연결된다.
 - 관계성은 회차별, 교섭 평판/참가 이력은 영속 풀이다. 둘을 혼동하지 않는다.
 - `python tests/relationship_experiment.py`: 동일 시트·동일 난수 1,024회씩으로 값 20/50/80을 비교하고
   `relationship_effects=False` 대조군에서는 판정 차이가 사라지는지 검사한다. **엔진 규칙의 효과이지

@@ -1,6 +1,6 @@
 """Export the game spec Markdown to DOCX with working internal links (stdlib only).
 
-python -m gm_coordinator.build_spec_docx GAME_SPEC_v1.0.md "<out>.docx"
+python -m GM_Agent_Society.build_spec_docx GAME_SPEC_v1.0.md "<out>.docx"
 Supports: #/##/### headings, <a id> anchors (as bookmarks), [text](#id) links,
 **bold**, `code`, bullet/numbered lines and pipe tables.
 """

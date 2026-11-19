@@ -9,6 +9,41 @@ import threading
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
+_FACTORY_LOCK = threading.Lock()  # [FIX-I6] B modules are swapped in sys.modules; one factory at a time
+
+
+def renew_lease(identity):
+    """One renewal: look up the identity's current role, then send that role's heartbeat."""
+    try:
+        session = identity.call('pool/session')
+        role = session['role']
+        if role in ('gm', 'player'):
+            identity.bind(**session['credentials']).call('gm/heartbeat' if role == 'gm' else 'agent/heartbeat')
+    except Exception as exc:
+        if getattr(exc, 'code', None) not in ('not_running', 'unauthorized', 'stale_term'):
+            print(f'heartbeat failed: {type(exc).__name__}', file=sys.stderr)
+
+
+def keep_alive_loop(identities, stopped, interval=2, renew=renew_lease):
+    """[FIX-I24] 2026-11-14 v10-main seed 15 attempt 1: for 40 s every call of the runner slowed down
+    (journal writes 1-2 s, engine calls 3-7 s). The old loop renewed 13 identities one after another with
+    two calls each, so one round took longer than the 40 s lease and four players expired. Each identity
+    now renews in its own thread: a round costs two calls of latency, not 26."""
+    workers = {}
+
+    def own_loop(identity):
+        while not stopped.wait(interval):
+            renew(identity)
+
+    while True:
+        for identity in list(identities):
+            if id(identity) not in workers:
+                workers[id(identity)] = thread = threading.Thread(target=own_loop, args=(identity,), daemon=True)
+                thread.start()
+        if stopped.wait(0.5):
+            break
+    for thread in workers.values():
+        thread.join(timeout=5)
 
 def load_env(path=ROOT / '.env'):
     """Read simple dotenv assignments without overriding shell variables.
@@ -43,35 +78,52 @@ def load(name, path):
     spec.loader.exec_module(module)
     return module
 
+def memory_dir():
+    """[FIX-I2] Where B keeps each persistent agent's lessons (next to the pool DB in batches)."""
+    return Path(os.environ.get('GAME_MEMORY_DIR') or ROOT / 'runs' / 'agent-memory')
+
+
 def llm_factory(role, session, catalog):
+    backend = os.environ.get('GAME_LLM_BACKEND', 'api')  # [FIX-I3] api | fake | codex
     key = os.environ.get('GAME_API_KEY', '')
     model = os.environ.get('GAME_MODEL', '')
-    if not key or not model:
+    if backend == 'api' and (not key or not model):
         raise RuntimeError('Set GAME_API_KEY and GAME_MODEL before --llm')
     b = ROOT / 'Agent_Reasoning'
-    saved = {name: sys.modules.get(name) for name in ('schema', 'llm', 'agent')}
-    try:
-        load('schema', b / 'schema.py')
-        gateway = load('llm', b / 'llm.py')
-        agent_module = load('agent', b / 'agent.py')
-        adapter = load('_team_b_adapter', b / 'adapter.py')
-    finally:
-        for name, module in saved.items():
-            if module is None:
-                sys.modules.pop(name, None)
-            else:
-                sys.modules[name] = module
-    engine_api = load('_team_engine_client', ROOT / 'Game-engine' / 'engine_client.py')
-    llm_role = role.bind(**role.credentials)
-    llm_role.timeout = 60
-    client = engine_api.EngineLLMClient(llm_role, key, model=model,
-        connection=os.environ.get('GAME_PROVIDER', 'openai'), stage='player.decision-or-answer')
+    with _FACTORY_LOCK:  # parallel stepping creates several players at once
+        saved = {name: sys.modules.get(name) for name in ('schema', 'llm', 'agent')}
+        try:
+            load('schema', b / 'schema.py')
+            gateway = load('llm', b / 'llm.py')
+            agent_module = load('agent', b / 'agent.py')
+            adapter = load('_team_b_adapter', b / 'adapter.py')
+        finally:
+            for name, module in saved.items():
+                if module is None:
+                    sys.modules.pop(name, None)
+                else:
+                    sys.modules[name] = module
     log = ROOT / 'runs' / session['game_id'].replace(':', '_') / (session['agent_id'] + '.jsonl')
     log.parent.mkdir(parents=True, exist_ok=True)
+    if backend == 'fake':
+        from offline_llm import RuleBasedLLM
+        client = RuleBasedLLM(log.parent / 'fake-calls.jsonl')
+    elif backend == 'codex':
+        from offline_llm import CodexCLIClient
+        client = CodexCLIClient(os.environ['CODEX_EXE'], log.parent / 'codex-calls.jsonl',
+                                # the project model (.env.example GAME_MODEL), not Codex's own default
+                                model=os.environ.get('CODEX_MODEL') or os.environ.get('GAME_MODEL') or 'gpt-6.1-terra',
+                                reasoning=os.environ.get('CODEX_REASONING', 'medium'))
+    else:
+        engine_api = load('_team_engine_client', ROOT / 'Game-engine' / 'engine_client.py')
+        llm_role = role.bind(**role.credentials)
+        llm_role.timeout = 310  # [FIX-I5] error-level only; the engine's provider call may take up to 300 s
+        client = engine_api.EngineLLMClient(llm_role, key, model=model,
+            connection=os.environ.get('GAME_PROVIDER', 'openai'), stage='player.decision-or-answer')
     from llm_transcript import TranscriptClient
     client = TranscriptClient(client, log.parent, session['agent_id'], role)
     agent = agent_module.LLMAgent(session['agent_id'], client=client, catalog=catalog, log_path=log)
-    return adapter.LLMPlayerRuntime(role, session, catalog, agent=agent)
+    return adapter.LLMPlayerRuntime(role, session, catalog, agent=agent, memory_dir=memory_dir())
 
 if __name__ == '__main__':
     load_env()
@@ -81,6 +133,20 @@ if __name__ == '__main__':
         sys.argv.remove('--llm')
         if not os.environ.get('GAME_API_KEY') or not os.environ.get('GAME_MODEL'):
             raise SystemExit('--llm requires GAME_API_KEY and GAME_MODEL')
+        os.environ['GAME_LLM_BACKEND'] = 'api'
+        sys.argv.extend(['--player', 'run_game:llm_factory'])
+    elif '--fake-llm' in sys.argv:  # [FIX-I3] B's full LLM path with a free rule-based stand-in
+        sys.argv.remove('--fake-llm')
+        os.environ['GAME_LLM_BACKEND'] = 'fake'
+        sys.argv.extend(['--player', 'run_game:llm_factory'])
+    elif '--codex' in sys.argv:  # [FIX-I3] temporary: local Codex CLI as the model
+        sys.argv.remove('--codex')
+        from offline_llm import find_codex
+        exe = find_codex()
+        if not exe:
+            raise SystemExit('--codex: codex CLI not found (set CODEX_EXE)')
+        os.environ['CODEX_EXE'] = exe
+        os.environ['GAME_LLM_BACKEND'] = 'codex'
         sys.argv.extend(['--player', 'run_game:llm_factory'])
     from GM_Agent_Society import run_scenario
     output_parser = argparse.ArgumentParser(add_help=False)
@@ -95,7 +161,15 @@ if __name__ == '__main__':
     def run_with_export(client, operator_token, *args, **kwargs):
         from game_safety import TrackedClient, cleanup
         from research_trace import TraceClient
-        client = TrackedClient(TraceClient(client))
+        from model_outage import GATE, PauseAwareClient
+        # [FIX-I11] engine calls refused while the gate has the game paused wait for RESUME
+        client = TrackedClient(TraceClient(PauseAwareClient(client)))
+
+        def hook_game(operator, game_id):
+            GATE.bind(lambda: operator.call('games/operator', game_id=game_id, operation='PAUSE'),
+                      lambda: operator.call('games/operator', game_id=game_id, operation='RESUME'))
+            return lambda: GATE.paused_seconds
+        kwargs.setdefault('on_created', hook_game)
         # LLM calls block the driver, but must not stop role leases.
         identities = []
         stopped = threading.Event()
@@ -105,21 +179,8 @@ if __name__ == '__main__':
             identities.append(identity)
             return original_worker(identity, *worker_args, **worker_kwargs)
 
-        def keep_alive():
-            while not stopped.wait(2):
-                for identity in list(identities):
-                    try:
-                        session = identity.call('pool/session')
-                        role = session['role']
-                        if role in ('gm', 'player'):
-                            identity.bind(**session['credentials']).call(
-                                'gm/heartbeat' if role == 'gm' else 'agent/heartbeat')
-                    except Exception as exc:
-                        if getattr(exc, 'code', None) not in ('not_running', 'unauthorized', 'stale_term'):
-                            print(f'heartbeat failed: {type(exc).__name__}', file=sys.stderr)
-
         run_scenario.AgentWorker = tracked_worker
-        heartbeat = threading.Thread(target=keep_alive, daemon=True)
+        heartbeat = threading.Thread(target=keep_alive_loop, args=(identities, stopped), daemon=True)  # [FIX-I24]
         heartbeat.start()
         try:
             result = original_run(client, operator_token, *args, **kwargs)
@@ -136,6 +197,13 @@ if __name__ == '__main__':
             stopped.set()
             heartbeat.join(timeout=15)
             run_scenario.AgentWorker = original_worker
+        result['model_outages'] = GATE.summary()   # [FIX-I11]
+        # [FIX-I3] Say which backend produced the decisions; fake/codex runs are not the API model.
+        result['llm_backend'] = os.environ.get('GAME_LLM_BACKEND', 'scripted')
+        if result['llm_backend'] == 'codex':
+            result['llm_model'] = os.environ.get('CODEX_MODEL') or os.environ.get('GAME_MODEL') or 'gpt-6.1-terra'
+            result['llm_note'] = ('model run through the Codex CLI harness (its own system prompt), not the '
+                                  'engine gateway: calls are not in engine llm_records; see runs/<game>/codex-calls.jsonl')
         target = ROOT / 'runs' / result['game_id'] / 'full-record.json'
         target.parent.mkdir(parents=True, exist_ok=True)
         record = client.bind(operator_token=operator_token).call(

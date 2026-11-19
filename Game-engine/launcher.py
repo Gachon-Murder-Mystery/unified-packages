@@ -80,7 +80,7 @@ def episode(client, operator_token, gm_repo, seed=7, scenario='normal', relation
             legal=[]
             for s in raw:
                 if s['kind']=='ambiguous':
-                    ok=any(x['category']==s['category'] and x['candidate']==s['candidate'] for x in self.legal_options['ambiguous'])
+                    ok=any(x['pair']==s.get('pair') for x in self.legal_options['ambiguous'])  # [FIX-A18]
                 else:
                     ok=any(x['clue_id']==s['clue_id'] and s.get('narration') in x['narrative_options'] for x in self.legal_options['indirect'])
                 if ok:legal.append(s)

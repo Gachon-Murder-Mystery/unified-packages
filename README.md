@@ -1,5 +1,8 @@
 # 통합 Murder Mystery 작업 공간
 
+> **수정본입니다.** experiment-30 이후 변경 내역, 확정한 규칙, 캠페인 실행법은 [CHANGES_EXPERIMENT30.md](CHANGES_EXPERIMENT30.md)를 보세요.
+> 아래 본문은 원본 설명입니다. 실행기 기본값이 바뀌었습니다: 같은 풀 공유, 시간 제한 꺼짐, `--codex`·`--fake-llm` 추가.
+
 Python 3.10+ 표준 라이브러리만 사용한다. 원본 저장소는 각 디렉터리에 이력과 함께 보존했다.
 확인 버전은 sources.lock.json. GM은 main이 아니라 gm-engine-v1 브랜치다.
 org-profile은 Organization 소개 저장소(.github) 사본이다.

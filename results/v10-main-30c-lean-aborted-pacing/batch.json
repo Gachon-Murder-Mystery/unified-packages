@@ -1,0 +1,40 @@
+{
+  "config": {
+    "start_seed": 1,
+    "isolated": false
+  },
+  "target_count": 16,
+  "attempts": [
+    {
+      "seed": 1,
+      "status": "running",
+      "directory": "F:\\multi_agent_AI_Game\\unified-packages-v10\\runs\\v10-main-30c-lean\\seed-1\\attempt-1",
+      "started_at": 1794533503.6044273,
+      "conditions": {
+        "backend": "codex",
+        "model": "gpt-6.1-terra via Codex CLI (reasoning medium)",
+        "deadline": 30,
+        "time_limit": null,
+        "unsolved_score": -10,
+        "parallel": true,
+        "question_timeout": 600,
+        "trade_timeout": 600,
+        "interaction_order": "simultaneous",
+        "clue_flow": "boosted",
+        "lean": true,
+        "profile": "v10",
+        "daily_pace": true
+      },
+      "quota_used_at_start": 63.0
+    }
+  ],
+  "pool_db": "F:\\multi_agent_AI_Game\\unified-packages-v10\\runs\\v10-main-30c-lean\\pool.sqlite3",
+  "memory_dir": "F:\\multi_agent_AI_Game\\unified-packages-v10\\runs\\v10-main-30c-lean\\agent-memory",
+  "pacing": {
+    "reset_at": 1794983880.0,
+    "day_start": 1794533502.6287808,
+    "day_used_start": 63.0,
+    "day_budget": 7.1,
+    "last_used": 63.0
+  }
+}
