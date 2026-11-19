@@ -82,7 +82,7 @@ class AgentRuntimeTests(unittest.TestCase):
         self.assertTrue(state["gm_report"]["technical_failure"])
 
     def test_required_statements_meet_every_tier(self):
-        options = {"definite": ["d1"], "ambiguous": [{"category": "suspect", "candidate": 3}],
+        options = {"definite": ["d1"], "ambiguous": [{"pair": {"suspect": 3, "weapon": 1}}],  # FIX-A18 pairs
                    "indirect": [{"clue_id": "i1", "narrative_options": ["자정에 라운지 칸에 누군가 있었어요."]}]}
         kinds = lambda n: [s["kind"] for s in required_statements({"response_options": options, "successes": n})]
         self.assertEqual([kinds(n) for n in range(4)],
@@ -90,7 +90,8 @@ class AgentRuntimeTests(unittest.TestCase):
         none = {"definite": [], "ambiguous": [], "indirect": []}
         self.assertEqual(required_statements({"response_options": none, "successes": 3}), [])
         self.assertIs(load_factory(None), ScriptedPlayerRuntime)
-        self.assertIs(load_factory("gm_coordinator.agent_runtime:ScriptedPlayerRuntime"), ScriptedPlayerRuntime)
+        # [FIX-C9] the package was renamed from gm_coordinator; use whatever name it is imported under
+        self.assertIs(load_factory(f"{__package__}.agent_runtime:ScriptedPlayerRuntime"), ScriptedPlayerRuntime)
 
     def test_http_run_joins_engine_process_player_runtime_and_gm(self):
         with engine_process(ENGINE_DIR, Path(self.dir.name) / "http.sqlite3") as (url, token):

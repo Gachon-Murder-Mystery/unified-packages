@@ -67,7 +67,8 @@ class Zen:
         headers={'Authorization':'Bearer '+self.key,'Content-Type':'application/json','User-Agent':'ornate-express-gm/1.2'}
         req=urllib.request.Request(root+endpoint,data=json.dumps(body).encode(),headers=headers,method='POST')
         try:
-            with urllib.request.urlopen(req,timeout=30) as res:raw_body=res.read().decode('utf-8','replace')
+            # [FIX-A6] was 30 s, which failed a normal-but-slow call in experiment-30; 300 s = stuck
+            with urllib.request.urlopen(req,timeout=300) as res:raw_body=res.read().decode('utf-8','replace')
             record['response']={'raw_body':raw_body}
             data=json.loads(raw_body)
             record['response']['json']=data

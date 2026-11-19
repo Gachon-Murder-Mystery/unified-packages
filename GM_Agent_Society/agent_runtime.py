@@ -39,9 +39,9 @@ def legal_statements(answer, question):
     for s in answer.get("statements", []):
         if s.get("kind") == "definite" and s.get("clue_id") in options["definite"]:
             result.append({"kind": "definite", "clue_id": s["clue_id"]})
-        elif s.get("kind") == "ambiguous" and any(x["category"] == s.get("category") and x["candidate"] == s.get("candidate")
-                                                 for x in options["ambiguous"]):
-            result.append({"kind": "ambiguous", "category": s["category"], "candidate": s["candidate"]})
+        elif s.get("kind") == "ambiguous" and isinstance(s.get("pair"), dict) and any(
+                x["pair"] == dict(sorted(s["pair"].items())) for x in options["ambiguous"]):  # [FIX-C11] pairs (A18)
+            result.append({"kind": "ambiguous", "pair": dict(sorted(s["pair"].items()))})
         elif s.get("kind") == "indirect":
             option = next((x for x in options["indirect"] if x["clue_id"] == s.get("clue_id")), None)
             if option:
@@ -55,15 +55,16 @@ def required_statements(question):
     """Smallest answer that meets the success-tier disclosure (spec A6) from the engine's options."""
     options, n = question["response_options"], question["successes"]
     definite = [{"kind": "definite", "clue_id": clue} for clue in options["definite"][:1]]
-    vague = [{"kind": "ambiguous", "category": x["category"], "candidate": x["candidate"]} for x in options["ambiguous"]]
+    vague = [{"kind": "ambiguous", "pair": dict(x["pair"])} for x in options["ambiguous"]]  # [FIX-C11]
     vague += [{"kind": "indirect", "clue_id": x["clue_id"], "text": x["narrative_options"][0]} for x in options["indirect"]]
+    extra = question.get("extra_vague", 0)  # [FIX-C12] engine A19
     if n <= 0:
         return []
     if n == 1:
-        return vague[:1] or definite
+        return vague[:1 + extra] or definite
     if n == 2:
-        return definite or vague[:2]
-    return definite + vague[:2]
+        return (definite + vague[:extra]) if definite else vague[:2 + extra]
+    return definite + vague[:2 + extra]
 
 
 class ScriptedPlayerRuntime:
@@ -76,6 +77,7 @@ class ScriptedPlayerRuntime:
         self.seed = int(hashlib.sha256(f"player:{session['game_id']}:{session['agent_id']}".encode()).hexdigest()[:8], 16)
         self.policy, self.applied = None, set()
         self.fallbacks, self.idle = 0, 0
+        self.pending = {}  # [FIX-C8] action_id -> payload of room searches settled at phase end
 
     def _update(self, obs):
         me = obs["self"]
@@ -141,6 +143,7 @@ class ScriptedPlayerRuntime:
         if obs["ended"] or obs["self"]["mode"] != "active":
             return "inactive"
         simple = self._update(obs)
+        self._collect()
         self._answer()
         if not obs["remaining_actions"]:
             self.idle += 1
@@ -153,10 +156,24 @@ class ScriptedPlayerRuntime:
         request.update(agent_id=obs["self"]["id"], action_id=uuid.uuid4().hex, action=action, payload=payload)
         result = self.role.call("agent/action", request=request)
         if action == "explore" and result["execution_status"] == "completed":
-            # The engine rolled; the result carries the dice for this player's own belief update.
-            self.policy.ingest({"action": "explore", "target": "corpse" if payload else "room",
-                                "clues": result["acquired_information"], "successes": result["roll"]["successes"]})
+            self._ingest_explore(result, payload)
+        elif action == "explore" and result["execution_status"] in ("pending", "held"):  # [FIX-C12] simultaneous holds actions
+            self.pending[request["action_id"]] = payload
         return action
+
+    def _ingest_explore(self, result, payload):
+        # The engine rolled; the result carries the dice for this player's own belief update.
+        self.policy.ingest({"action": "explore", "target": "corpse" if payload else "room",
+                            "clues": result["acquired_information"], "successes": result["roll"]["successes"]})
+
+    def _collect(self):
+        """[FIX-C8] Room searches now settle at the end of the interaction phase (engine FIX-A14).
+        Without this the policy never saw an empty room and searched forever."""
+        for action_id, payload in list(self.pending.items()):
+            result = self.role.call("agent/result", action_id=action_id)
+            if result["execution_status"] == "completed":
+                self.pending.pop(action_id)
+                self._ingest_explore(result, payload)
 
 
 def load_factory(spec):
@@ -189,6 +206,10 @@ class AgentWorker:
             self.player, self.context = None, None
             return session["role"]
         if self.context != session["context_key"]:
+            # [FIX-C1] The player runtime belongs to this persistent pool member, so it gets the
+            # member's own pool credential to read/write its cross-game learning
+            # (pool/learning/get|update, pool/feedback). Game secrets stay behind role tokens.
+            session = dict(session, pool_credentials=dict(self.identity.credentials))
             self.player = self.factory(self.identity.bind(**session["credentials"]), session, self.catalog)
             self.context = session["context_key"]
             self.runtimes.append(self.player)

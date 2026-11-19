@@ -82,6 +82,11 @@ class BeliefState:
             if category in CATEGORIES and isinstance(candidate, int):
                 return {"t": "definite", "category": category, "candidate": candidate}
             return None
+        if kind == "ambiguous" and isinstance(clue.get("pair"), dict) and len(clue["pair"]) == 2:
+            pair = sorted(clue["pair"].items())  # [FIX-B23] pair exclusion from an answer
+            if all(c in CATEGORIES and isinstance(v, int) for c, v in pair) and pair[0][0] != pair[1][0]:
+                return {"t": "pair", "pair": [list(x) for x in pair]}
+            return None
         if kind != "indirect":
             return None
         shape = clue.get("type")
@@ -122,6 +127,7 @@ class BeliefState:
         excluded = {c: {} for c in CATEGORIES}      # id -> support set
         positions = {"suspect": {}, "weapon": {}}   # id -> (room, support set)
         companions = []
+        pairs = []                                  # [FIX-B23] ((cat, id), (cat, id), support)
 
         for clue_id, fact in self.facts.items():
             shape = fact["t"]
@@ -134,6 +140,9 @@ class BeliefState:
                 positions["weapon"][fact["weapon"]] = (fact["room"], {clue_id})
             elif shape == "companion":
                 companions.append((fact["character"], fact["other"], {clue_id}))
+            elif shape == "pair":
+                (c1, v1), (c2, v2) = fact["pair"]
+                pairs.append(((c1, v1), (c2, v2), {clue_id}))
 
         rooms = self.pools["place"]
         changed = True
@@ -171,6 +180,24 @@ class BeliefState:
                         if i != room and i not in excluded["place"]:
                             excluded["place"][i] = support
                             changed = True
+                # [FIX-A5] Reverse inference, rule-for-rule with the engine's infer(): when
+                # every open candidate's midnight room is known, the scene is one of them.
+                if alive and all(i in positions[cat] for i in alive):
+                    held = {positions[cat][i][0] for i in alive}
+                    support = set().union(*(positions[cat][i][1] for i in alive), *excluded[cat].values())
+                    for i in rooms:
+                        if i not in held and i not in excluded["place"]:
+                            excluded["place"][i] = support
+                            changed = True
+
+            # [FIX-B23] Pair exclusions, rule-for-rule with the engine (FIX-A18): once one side's
+            # category is down to that candidate, the other side is out.
+            for (c1, v1), (c2, v2), support in pairs:
+                for (cx, vx), (cy, vy) in (((c1, v1), (c2, v2)), ((c2, v2), (c1, v1))):
+                    left = [i for i in self.pools[cy] if i not in excluded[cy]]
+                    if left == [vy] and vx in self.pools[cx] and vx not in excluded[cx]:
+                        excluded[cx][vx] = support | set().union(*excluded[cy].values())
+                        changed = True
 
         moved = False
         for category in CATEGORIES:
@@ -185,6 +212,28 @@ class BeliefState:
 
     def remaining(self, category):
         return [i for i in self.pools[category] if i not in self.eliminated[category]]
+
+    def open_pairs(self):
+        """[FIX-B23] Pair exclusions whose two candidates are both still open."""
+        out = []
+        for fact in self.facts.values():
+            if fact["t"] == "pair":
+                (c1, v1), (c2, v2) = fact["pair"]
+                if v1 in self.remaining(c1) and v2 in self.remaining(c2):
+                    out.append({c1: v1, c2: v2})
+        return out
+
+    def combinations(self):
+        """[FIX-B23] Open (suspect, weapon, place) triples, after pair exclusions."""
+        pairs = self.open_pairs()
+        count = 0
+        for s in self.remaining("suspect"):
+            for w in self.remaining("weapon"):
+                for p in self.remaining("place"):
+                    triple = {"suspect": s, "weapon": w, "place": p}
+                    if not any(all(triple[c] == v for c, v in pair.items()) for pair in pairs):
+                        count += 1
+        return count
 
     def entropy(self, category):
         n = len(self.remaining(category))
@@ -225,7 +274,41 @@ class BeliefState:
         }
         out["definite_count"] = shapes.count("definite")
         out["unusable_count"] = len(self.opaque)
+        out["pair_exclusions"] = self.open_pairs()  # [FIX-B23]
+        out["combinations_left"] = self.combinations()
+        out["indirect_leverage"] = self.indirect_leverage()
         return out
+
+    def indirect_leverage(self):
+        """[FIX-B8] Turn held midnight facts into an inquiry compass.
+
+        infer() can only use a midnight position once that room is excluded as the scene
+        (the culprit and the weapon were in the scene at midnight). In experiment-30 few
+        places were ever excluded, so indirect clues almost never bit. This lists, for each
+        open place, which open suspects/weapons would fall *if* that place were excluded,
+        so the model can aim its question hypothesis at the place that unlocks the most.
+        Pure read-out of facts already held: it eliminates nothing by itself."""
+        located = {"suspect": {}, "weapon": {}}
+        for fact in self.facts.values():
+            if fact["t"] == "character_room":
+                located["suspect"][fact["character"]] = fact["room"]
+            elif fact["t"] == "weapon_room":
+                located["weapon"][fact["weapon"]] = fact["room"]
+        for a, b in [(f["character"], f["other"]) for f in self.facts.values() if f["t"] == "companion"]:
+            for x, y in ((a, b), (b, a)):
+                if x not in located["suspect"] and y in located["suspect"]:
+                    located["suspect"][x] = located["suspect"][y]
+        result = []
+        for place in self.remaining("place"):
+            drops = {cat: sorted(i for i, room in located[cat].items()
+                                 if room == place and i in self.remaining(cat))
+                     for cat in ("suspect", "weapon")}
+            if drops["suspect"] or drops["weapon"]:
+                result.append({"if_place_excluded": place,
+                               "suspects_also_excluded": drops["suspect"],
+                               "weapons_also_excluded": drops["weapon"],
+                               "unlocks": len(drops["suspect"]) + len(drops["weapon"])})
+        return sorted(result, key=lambda x: -x["unlocks"])
 
     # ---------- serialisation (for C's takeover / forced termination) ----------
 

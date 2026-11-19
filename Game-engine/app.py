@@ -152,7 +152,9 @@ class Handler(BaseHTTPRequestHandler):
             status=401 if e.code=='unauthorized' else 404 if e.code=='not_found' else 400 if e.code=='invalid_input' else 409
             self.send(status,{'schema_version':integration.VERSION,'code':e.code,'error':str(e)[:250]})
         except (ValueError,TypeError,KeyError,json.JSONDecodeError) as e:self.send(400,{'error':str(e)[:250]})
-        except Exception:self.send(500,{'error':'서버 오류가 발생했습니다. 입력을 확인하고 다시 시도해주세요.'})
+        except Exception:
+            import traceback; traceback.print_exc()  # [FIX-A22] keep the cause; the client only sees a 500
+            self.send(500,{'error':'서버 오류가 발생했습니다. 입력을 확인하고 다시 시도해주세요.'})
     def log_message(self,*args):pass
 
     def handle_multi(self,d):

@@ -1,6 +1,7 @@
 """Spec v1.3 data, truthful inference and mission predicates (no agent policy)."""
 import json
 import random
+import re
 from pathlib import Path
 
 DATA = json.loads(Path(__file__).with_name('competitive_catalog.json').read_text(encoding='utf-8'))
@@ -24,13 +25,67 @@ def tier(mission_id, character_id, mbti, n=None):
     return TIERS[max(0, min(2, TIERS.index(base)+(int(hard)-int(easy))))]
 
 
-def candidates(seed, aid, cid, mbti, previous=(), player_count=3):
+def min_cycles(mission):
+    """[FIX-A7] Longest cycle count named in the condition ("40사이클 동안 ..." -> 40).
+    Conservative for "within N cycles" wording, which can also finish earlier."""
+    return max([int(x) for x in re.findall(r'(\d+)\s*사이클', mission['condition'])] or [0])
+
+
+# [FIX-A10] Fewest cycles in which each mission can possibly be completed (one interaction
+# action per cycle, a move every movement phase, trades cost no action). The text parse of
+# min_cycles() missed counted actions (8 preparations need 16 cycles) and over-counted
+# "within 15 cycles" wording, so every mission is listed explicitly.
+MIN_CYCLES = {'O1': 2, 'O2': 41, 'O3': 6, 'O4': 1, 'O5': 1, 'O6': 2, 'O7': 40,
+              'M01': 7, 'M02': 10, 'M03': 6, 'M04': 6, 'M05': 3, 'M06': 5, 'M07': 10, 'M08': 20,
+              'M09': 10, 'M10': 5, 'M11': 8, 'M12': 1, 'M13': 1, 'M14': 1, 'M15': 1, 'M16': 40,
+              'M17': 1, 'M18': 1, 'M19': 1, 'M20': 30, 'M21': 30, 'M22': 30, 'M23': 30, 'M24': 16,
+              'M25': 20, 'M26': 40, 'M27': 40, 'M28': 5, 'M29': 7, 'M30': 4, 'M31': 3, 'M32': 6,
+              'M33': 3, 'M34': 3, 'M35': 6, 'M36': 1, 'M37': 1, 'M38': 1, 'M39': 1, 'M40': 1,
+              'M41': 1, 'M42': 21, 'M43': 1, 'M44': 4, 'M45': 10, 'M46': 2, 'M47': 3, 'M48': 1,
+              'M49': 15, 'M50': 8, 'M51': 1,
+              # [FIX-A21] a player can join one trade per cycle (it is the action)
+              'M52': 1, 'M53': 2, 'M54': 2, 'M55': 2, 'M56': 4}
+# Who must exist besides me: other characters (players or NPCs), other players, NPCs.
+# Trade partners are any living character (NPCs trade too).
+NEEDS = {'O4': {'others': 4}, 'O5': {'others': 1}, 'M07': {'others': 1}, 'M08': {'players': 1},
+         'M12': {'others': 6}, 'M13': {'npcs': 3}, 'M14': {'players': 1}, 'M15': {'npcs': 1},
+         'M17': {'others': 3}, 'M18': {'others': 2}, 'M19': {'others': 3}, 'M20': {'others': 1},
+         'M28': {'others': 1}, 'M29': {'others': 7}, 'M35': {'npcs': 1}, 'M36': {'others': 1},
+         'M37': {'others': 1}, 'M38': {'others': 3}, 'M39': {'others': 1}, 'M43': {'players': 3},
+         'M44': {'players': 1}, 'M46': {'players': 1}, 'M47': {'npcs': 1},
+         'M52': {'others': 1}, 'M53': {'others': 1}, 'M54': {'others': 1}, 'M56': {'others': 1}}
+BUNDLE_MISSIONS = ('M52', 'M53', 'M54')  # need bundled / unequal trades (interaction_order simultaneous)
+
+
+def mission_feasible(mid, deadline, player_count, cid=None, targets=None, rules=None):
+    """[FIX-A10] Can this mission be completed in a game with these settings at all?
+    Necessary conditions (cycles, who exists), so a mission that passes may still be missed,
+    but one that fails can never be achieved. Relationship targets are reachable: questions
+    and fulfilled trades both raise them every cycle."""
+    m = MISSIONS[mid]
+    need = MIN_CYCLES.get(mid, min_cycles(m))
+    if deadline is not None and need > deadline:
+        return False, f'needs at least {need} cycles, game has {deadline}'
+    have = {'others': 11, 'players': player_count - 1, 'npcs': 12 - player_count}
+    for who, n in NEEDS.get(mid, {}).items():
+        if have[who] < n:
+            return False, f'needs {n} {who}, game has {have[who]}'
+    if mid == 'M48' and deadline is not None and have['others'] * deadline < 6:
+        return False, 'not enough possible askers'
+    if mid in BUNDLE_MISSIONS and (rules or {}).get('interaction_order') != 'simultaneous':
+        return False, 'needs bundled trades (interaction_order simultaneous)'  # [FIX-A21]
+    return True, ''
+
+
+def candidates(seed, aid, cid, mbti, previous=(), player_count=3, deadline=None, rules=None):
     result = {}
     for t in TIERS:
         ids = []
         for mid, m in MISSIONS.items():
-            if mid in previous or (m['designate'] == 'npc' and player_count == 12):
+            if mid in previous:
                 continue
+            if not mission_feasible(mid, deadline, player_count, cid, rules=rules)[0]:
+                continue  # [FIX-A7, FIX-A10] never offer a mission this game cannot satisfy
             quantities = [int(x) for x in m['quantity']] if m.get('quantity') else [None]
             if m.get('quantity'):
                 eligible = sorted({tier(mid, cid, mbti, n) for n in quantities})
@@ -48,10 +103,14 @@ def infer(information):
     excluded = {k: {} for k in ('suspect', 'weapon', 'place')}
     positions = {'suspect': {}, 'weapon': {}}
     companion = []
+    pairs = []  # [FIX-A18]
     for item in information:
         cid = item['id']
         if item.get('kind') == 'definite':
             excluded[item['category']][item['candidate']] = {cid}
+        elif item.get('kind') == 'ambiguous' and isinstance(item.get('pair'), dict) and len(item['pair']) == 2:
+            (c1, v1), (c2, v2) = sorted(item['pair'].items())
+            pairs.append(((c1, v1), (c2, v2), {cid}))
         elif item.get('kind') == 'indirect':
             if item['type'] == 'companion':
                 companion.append((item['character'], item['other'], {cid}))
@@ -84,6 +143,25 @@ def infer(information):
                     if i != room and i not in excluded['place']:
                         excluded['place'][i] = support
                         changed = True
+            # [FIX-A5] Reverse inference (generalises the rule above). The culprit/weapon is
+            # one of the candidates still open and was in the scene at midnight, so when every
+            # open candidate's midnight room is known, the scene is one of those rooms.
+            # Mirrored rule-for-rule in Agent_Reasoning/schema.py (H2 relies on identity).
+            if remaining and all(i in positions[cat] for i in remaining):
+                rooms = {positions[cat][i][0] for i in remaining}
+                support = set().union(*(positions[cat][i][1] for i in remaining), *excluded[cat].values())
+                for i in range(8):
+                    if i not in rooms and i not in excluded['place']:
+                        excluded['place'][i] = support
+                        changed = True
+        # [FIX-A18] Pair exclusions ("X together with W is not the answer"): once the other
+        # side's category is down to W, X is out (and the reverse). Mirrored in schema.py.
+        for (c1, v1), (c2, v2), support in pairs:
+            for (cx, vx), (cy, vy) in (((c1, v1), (c2, v2)), ((c2, v2), (c1, v1))):
+                left = [i for i in range(12 if cy == 'suspect' else 8) if i not in excluded[cy]]
+                if left == [vy] and vx not in excluded[cx]:
+                    excluded[cx][vx] = support | set().union(*excluded[cy].values())
+                    changed = True
     return {cat: {str(i): sorted(support) for i, support in values.items()} for cat, values in excluded.items()}
 
 
@@ -171,14 +249,22 @@ def mission_complete(g, aid, mission):
                 and (frame is None or x['cycle'] == frame)]
     def duration(n, predicate):
         return len(cycles) >= n and all(predicate(x) for x in acts if x['cycle'] <= n)
-    definite = [x for x in c['information'].values() if x.get('kind') == 'definite']
-    indirect = [x for x in c['information'].values() if x.get('kind') in ('indirect', 'narrated')]
+    start = set(p.get('start_clues', []))  # [FIX-A19] dealt clues are not "acquired"
+    definite = [x for x in c['information'].values() if x.get('kind') == 'definite' and x['id'] not in start]
+    indirect = [x for x in c['information'].values() if x.get('kind') in ('indirect', 'narrated') and x['id'] not in start]
     if mid == 'O1': return sum(x['room'] == 5 and x['successes'] and x['alone_players'] for x in search) >= 2
     if mid == 'O2':
         first = p.get('first_definite')
         return bool(first and current-first['cycle'] >= 40 and not any(
             x['clue_id'] == first['id'] and x['sender'] == aid for x in g['disclosures']))
-    if mid == 'O3': return streak(7, lambda x: all(x['rooms'][other] != 7 for other in x['alive'] if other != str(cid))) >= 6 and any(x['room'] == 7 and x['successes'] for x in search)
+    if mid == 'O3':  # [FIX-A11] the successful search must fall inside the 6-cycle stay ("그동안")
+        hits, n, hit = {x['cycle'] for x in search if x['room'] == 7 and x['successes']}, 0, False
+        for x in cycles:
+            if x['rooms'][str(cid)] == 7 and all(x['rooms'][o] != 7 for o in x['alive'] if o != str(cid)):
+                n, hit = n+1, hit or x['cycle'] in hits
+                if n >= 6 and hit: return True
+            else: n, hit = 0, False
+        return False
     if mid == 'O4': return sum(x >= 65 for x in incoming) >= 4
     if mid == 'O5': return relation >= 85
     if mid == 'O6': return set(targets.get('clue_ids', [])) <= set(c['information']) and len(targets.get('clue_ids', [])) == 3
@@ -207,7 +293,13 @@ def mission_complete(g, aid, mission):
     if mid == 'M22': return duration(30, lambda x: x['kind'] != 'question')
     if mid == 'M23': return duration(30, lambda x: x['kind'] != 'prepare')
     if mid == 'M24': return sum(x['prepared'] and x['kind'] in ('question', 'explore') for x in acts) >= 8
-    if mid == 'M25': return len(cycles) >= 20 and all(x['rooms'][str(cid)] != (SHEETS[cid]['start_room'] if i == 0 else cycles[i-1]['rooms'][str(cid)]) for i, x in enumerate(cycles[:20]))
+    if mid == 'M25':  # [FIX-A11] any 20 consecutive cycles, not only the first 20
+        n = 0
+        for i, x in enumerate(cycles):
+            moved = x['rooms'][str(cid)] != (SHEETS[cid]['start_room'] if i == 0 else cycles[i-1]['rooms'][str(cid)])
+            n = n+1 if moved else 0
+            if n >= 20: return True
+        return False
     if mid == 'M26': return len(cycles) >= 40 and not any(x['sender'] == aid and x['kind'] == 'possession' for x in g['disclosures'] if x['cycle'] <= 40)
     if mid == 'M27': return len(cycles) >= 40 and not any(x['proposer'] == aid or (x['recipient'] == aid and x['accepted']) for x in g['trades'].values() if x['cycle'] <= 40)
     if mid == 'M28': return max([sum(x['target'] == y['target'] for x in qs) for y in qs] or [0]) >= 5
@@ -236,4 +328,14 @@ def mission_complete(g, aid, mission):
     if mid == 'M49': return len(cycles) >= 15 and not any(x['cycle'] <= 15 for x in received())
     if mid == 'M50': return at(7) >= 8
     if mid == 'M51': return len(definite) >= mission['params']['N']
+    # [FIX-A21] trade missions read settled trades (sealed decisions, A17) and bundles (A20)
+    def got(t): return len(t['offers'].get(other_side(t), [])) if t['fulfilled'].get(other_side(t)) else 0
+    def other_side(t): return t['recipient'] if t['proposer'] == aid else t['proposer']
+    if mid == 'M52': return any(got(t) >= 3 for t in trades)
+    if mid == 'M53': return sum(got(t) for t in trades) >= 5
+    if mid == 'M54': return sum(bool(t['fulfilled'].get(aid)) and len(t['offers'].get(aid, [])) > len(t['offers'].get(other_side(t), []))
+                               for t in trades) >= 2
+    if mid == 'M55': return p.get('multi_finds', 0) >= 2
+    if mid == 'M56': return (sum(bool(t['fulfilled'].get(aid)) for t in trades) >= 4 and
+                             not any((t.get('withheld') or {}).get(aid) for t in trades))
     raise AssertionError(f'unimplemented mission {mid}')

@@ -33,7 +33,7 @@ class DataTests(unittest.TestCase):
     def test_extracted_data_matches_spec_and_design(self):
         self.assertEqual(build_v12_data.build(), DATA, "v12_data.json is stale: run build_v12_data")
         self.assertEqual(len(DATA["characters"]), 12)
-        self.assertEqual(len(DATA["missions"]), 58)
+        self.assertEqual(len(DATA["missions"]), 63)  # 58 + M52-M56 (FIX-A21)
         self.assertEqual(len(set(DATA["mbti"])), 16)
         self.assertEqual([c["job_id"] for c in DATA["characters"]], list(range(12)))
         self.assertTrue(all(sum(c["stats"].values()) == 11 for c in DATA["characters"]))
@@ -260,18 +260,19 @@ class PlayerTests(unittest.TestCase):
         self.assertEqual(p.respond({"asker_id": "p01", "hypothesis": {"suspect": 1, "weapon": 1, "place": 1},
                                     "successes": 2})["form"], "definite")
         q = self.player()
-        # Holding a clue on every hypothesis candidate leaves no true ambiguous statement: indirect clues fill in.
-        q.ingest({"clues": [definite("s0", "suspect", 0), definite("w0", "weapon", 0), definite("r0", "place", 0),
-                            {"id": "near", "kind": "indirect", "type": "character_room", "character": 4, "room": 6},
+        # [FIX-A18] A pair statement needs a definite anchor. Holding only indirect clues leaves no true
+        # ambiguous statement, so indirect clues fill in, the least connecting first.
+        q.ingest({"clues": [{"id": "near", "kind": "indirect", "type": "character_room", "character": 4, "room": 6},
                             {"id": "far", "kind": "indirect", "type": "character_room", "character": 5, "room": 1}]})
         q.asked_me["p02"] = [{"suspect": 9, "weapon": 1, "place": 6}]  # p02 has looked at place 6
         hyp = {"suspect": 0, "weapon": 0, "place": 0}
         answer = q.respond({"asker_id": "p02", "hypothesis": hyp, "successes": 1})
         self.assertEqual(answer["statements"], [{"kind": "indirect", "clue_id": "far",
                                                  "narration": q.narrate({"type": "character_room", "room": 1})}])
-        hyp_with_gap = {"suspect": 7, "weapon": 0, "place": 0}
-        answer = q.respond({"asker_id": "p02", "hypothesis": hyp_with_gap, "successes": 1})
-        self.assertEqual(answer["statements"][0], {"kind": "ambiguous", "category": "suspect", "candidate": 7})
+        # with a definite anchor the answer is a pair exclusion with a hypothesis candidate of another category
+        q.ingest({"clues": [definite("s0", "suspect", 0)]})
+        answer = q.respond({"asker_id": "p02", "hypothesis": {"suspect": 7, "weapon": 2, "place": 3}, "successes": 1})
+        self.assertEqual(answer["statements"][0], {"kind": "ambiguous", "pair": {"suspect": 0, "weapon": 2}})
 
     def test_narration_omits_and_never_concludes(self):
         p = self.player()

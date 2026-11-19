@@ -21,7 +21,10 @@ class CompetitiveTests(unittest.TestCase):
         self.e = ExternalEngine(self.path, lambda: self.now)
         self.op = {'operator_token': self.e.operator_token}
         self.pool = self.call('pool/bootstrap', self.op)
-        self.new = self.call('games/create', self.op, game_id='case', seed=7)
+        # v1.3 behaviour tests: the engine default is simultaneous since 2026-11-07; these keep
+        # checking the immediate mode (test_simultaneous.py covers the default).
+        # FIX-A29: these v1.3 tests also run without MBTI corrections (test_mbti_rules.py covers them)
+        self.new = self.call('games/create', self.op, game_id='case', seed=7, rules={'interaction_order': 'immediate', 'mbti_rules': False, 'orchestration': 'engine'})  # FIX-A33: v1.3 auto mode
         self.gm = self.new['controller'] | {'game_id': 'case'}
         self.ids = [a['agent_id'] for a in self.pool['agents'] if a['pool_role'] == 'player'][:3]
         self.activation = [{'agent_id': a, 'character_id': i} for i, a in enumerate(self.ids)]
@@ -119,7 +122,7 @@ class CompetitiveTests(unittest.TestCase):
     def test_catalog_missions_and_sheet_contract(self):
         c = self.call('catalog')
         self.assertEqual(c['ruleset'], SPEC)
-        self.assertEqual(len(c['characters']), 12); self.assertEqual(len(c['missions']), 58)
+        self.assertEqual(len(c['characters']), 12); self.assertEqual(len(c['missions']), 63)  # 58 + M52-M56 (FIX-A21)
         self.assertEqual(c['default_rules']['deadline_cycles'], 120)
     def test_initial_only_roles_no_action_tasks(self):
         self.error('conflict', lambda: self.call('gm/command', self.gm, **(self.plan | {'command_id': 'late'})))
@@ -443,8 +446,11 @@ class CompetitiveTests(unittest.TestCase):
             if mid=='M22':acts=[x for x in acts if x['kind']!='question']
             if mid=='M48':acts.extend(row('question',0,'question')|{'actor':1} for _ in range(6))
             g['activity']=acts
+            mine,theirs=(['a','b'],['x']) if mid=='M54' else (['a'],['x','y','z'])  # FIX-A21 bundles
             g['trades']={str(i):{'proposer':aid,'recipient':'peer:'+str(i),'accepted':True,'status':'settled',
-                'fulfilled':{aid:True,'peer:'+str(i):True},'first_sender':'peer:'+str(i),'cycle':1} for i in range(3)}
+                'fulfilled':{aid:True,'peer:'+str(i):True},'first_sender':'peer:'+str(i),'cycle':1,
+                'offers':{aid:mine,'peer:'+str(i):theirs}} for i in range(4)}
+            p['multi_finds']=2
             if mid=='M37':
                 for x in g['trades'].values():x['fulfilled'][aid]=False
             if mid=='M27':g['trades']={}

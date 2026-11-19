@@ -1,11 +1,15 @@
 """C-owned GM for A's competitive v1.3 engine (`mode=competitive`, ruleset competitive-v1.3).
 
-The GM is a game master, not a task planner (spec v1.3 C). Players roll by
-submitting their own actions to the engine (B: action choice + `agent/action`);
-the engine rolls the dice and adjudicates. The GM receives those dice results
-through its supervisor events and continues the scenario:
+The GM is a game master, not a task planner (spec v1.3 C). [FIX-C14] It is the master controller:
+it opens every phase, asks each player to act (REQUEST: the legal actions and targets the engine
+computed for that player), closes the negotiation stage (RELEASE), declares mechanical timeouts
+(EXPIRE) and advances (ADVANCE). The engine only referees: players submit the requested action,
+their answers and trade replies to the engine directly, the engine rolls the dice and adjudicates,
+so adjudication never waits for the GM. The GM receives the dice results through its supervisor
+events and continues the scenario:
 
-  roll results -> wait until every roll and reply is resolved -> ADVANCE
+  open phase -> REQUEST each player -> (timeouts: EXPIRE, replacement REQUEST) -> RELEASE negotiation
+  -> wait until every roll and reply is resolved -> ADVANCE
   engine-written announcement data -> ANNOUNCE as soon as it exists
   official resolution -> FINISH -> C4 REPORT with evidence
 
@@ -200,6 +204,39 @@ class CompetitiveGM:
             published.append(item["ref"])
         return published
 
+    def _orchestrate(self, observation):
+        """[FIX-C14] Drive the open phase. Returns "ready" when the phase can advance."""
+        epoch = observation["phase_epoch"]
+        expired = False
+        for item in observation.get("overdue", []):
+            ref = hashlib.sha1(item["ref"].encode()).hexdigest()[:12]
+            try:
+                self._command(f"expire:{item['kind']}:{ref}", operation="EXPIRE", kind=item["kind"], ref=item["ref"])
+                expired = True
+            except Exception as exc:
+                if _code(exc) != "conflict":  # settled meanwhile
+                    raise
+        if expired:
+            observation = self.sync()
+        ids = observation.get("needs_request") or []
+        if ids:
+            self.ledger["requests"] = self.ledger.get("requests", 0) + 1
+            stamp = f"{epoch}:{self.ledger['requests']}:{int(time.time() * 1000) % 10 ** 8}"
+            try:
+                self._command(f"request:{stamp}", operation="REQUEST", phase_epoch=epoch, agent_ids=ids)
+            except Exception as exc:
+                if _code(exc) != "conflict":  # the phase moved on under us
+                    raise
+            observation = self.sync()
+        if observation.get("ready_to_release"):
+            try:
+                self._command(f"release:{epoch}", operation="RELEASE", phase_epoch=epoch)
+            except Exception as exc:
+                if _code(exc) not in ("pending", "conflict"):
+                    raise
+            observation = self.sync()
+        return "ready" if observation.get("ready_to_advance") else "waiting"
+
     def tick(self):
         """One GM step. Returns a status string; never performs player actions."""
         observation = self.sync()
@@ -217,7 +254,10 @@ class CompetitiveGM:
         if observation["resolution"] is not None:
             self._finish(observation)
             return "ended"
-        if not self._resolved(observation):
+        if observation.get("orchestration") == "gm":   # [FIX-C14] the GM drives the phase
+            if self._orchestrate(observation) != "ready":
+                return "waiting"
+        elif not self._resolved(observation):
             return "waiting"
         try:
             self._command(f"advance:{observation['phase_epoch']}", operation="ADVANCE",
@@ -234,6 +274,8 @@ class CompetitiveGM:
         if observation["resolution"] is not None:
             self._finish(observation)
             return "ended"
+        if observation.get("orchestration") == "gm":   # [FIX-C14] ask for the new phase at once
+            self._orchestrate(observation)
         return "advanced"
 
     # ---------- ending and C4 report ----------
