@@ -1,4 +1,4 @@
-"""Run C's v1 GM against A's real engine process. python -m gm_coordinator.v1_demo --help
+"""Run C's v1 GM against A's real engine process. python -m GM_Agent_Society.v1_demo --help
 
 The engine is started from the sibling Game-engine checkout with a temporary
 DB. Players are explicit scripted test doubles (not B's LLM agent); the GM

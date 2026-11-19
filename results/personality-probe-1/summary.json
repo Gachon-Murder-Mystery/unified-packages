@@ -1,0 +1,1445 @@
+{
+ "conditions": {
+  "full": {
+   "parsed": 48,
+   "axes": {
+    "EI": {
+     "factor": "extraversion",
+     "E": 48.6,
+     "I": 18.8,
+     "d": 18.64,
+     "median_split_hit": 1.0,
+     "d_on_other_factors": {
+      "intellect": -0.01,
+      "agreeableness": 1.13,
+      "conscientiousness": -0.16,
+      "stability": 1.07
+     }
+    },
+    "SN": {
+     "factor": "intellect",
+     "N": 45,
+     "S": 29,
+     "d": 14.01,
+     "median_split_hit": 1.0,
+     "d_on_other_factors": {
+      "extraversion": 0.06,
+      "agreeableness": 0.09,
+      "conscientiousness": -0.41,
+      "stability": 0.15
+     }
+    },
+    "TF": {
+     "factor": "agreeableness",
+     "F": 48.4,
+     "T": 35.8,
+     "d": 2.48,
+     "median_split_hit": 0.96,
+     "d_on_other_factors": {
+      "extraversion": 0.0,
+      "intellect": -0.12,
+      "conscientiousness": -0.09,
+      "stability": -1.87
+     }
+    },
+    "JP": {
+     "factor": "conscientiousness",
+     "J": 47.4,
+     "P": 26.2,
+     "d": 7.18,
+     "median_split_hit": 1.0,
+     "d_on_other_factors": {
+      "extraversion": -0.1,
+      "intellect": -0.03,
+      "agreeableness": 0.12,
+      "stability": 0.08
+     }
+    }
+   },
+   "type_profiles": {
+    "ENFJ": {
+     "extraversion": 47,
+     "intellect": 43.7,
+     "agreeableness": 50,
+     "conscientiousness": 44.3,
+     "stability": 37.7
+    },
+    "ENFP": {
+     "extraversion": 49.7,
+     "intellect": 44.7,
+     "agreeableness": 50,
+     "conscientiousness": 21.3,
+     "stability": 33.7
+    },
+    "ENTJ": {
+     "extraversion": 49.3,
+     "intellect": 46,
+     "agreeableness": 43.3,
+     "conscientiousness": 46,
+     "stability": 40
+    },
+    "ENTP": {
+     "extraversion": 50,
+     "intellect": 45,
+     "agreeableness": 41.3,
+     "conscientiousness": 23,
+     "stability": 39.7
+    },
+    "ESFJ": {
+     "extraversion": 46.7,
+     "intellect": 28.7,
+     "agreeableness": 50,
+     "conscientiousness": 49.3,
+     "stability": 33.3
+    },
+    "ESFP": {
+     "extraversion": 49.3,
+     "intellect": 28,
+     "agreeableness": 50,
+     "conscientiousness": 25.7,
+     "stability": 34.7
+    },
+    "ESTJ": {
+     "extraversion": 47,
+     "intellect": 29.7,
+     "agreeableness": 41.7,
+     "conscientiousness": 50,
+     "stability": 36
+    },
+    "ESTP": {
+     "extraversion": 50,
+     "intellect": 30,
+     "agreeableness": 42.7,
+     "conscientiousness": 27.7,
+     "stability": 39
+    },
+    "INFJ": {
+     "extraversion": 20.3,
+     "intellect": 44.7,
+     "agreeableness": 46.7,
+     "conscientiousness": 44,
+     "stability": 30
+    },
+    "INFP": {
+     "extraversion": 19.3,
+     "intellect": 44.3,
+     "agreeableness": 47.3,
+     "conscientiousness": 25.7,
+     "stability": 25.7
+    },
+    "INTJ": {
+     "extraversion": 17.7,
+     "intellect": 44.7,
+     "agreeableness": 30.3,
+     "conscientiousness": 47.3,
+     "stability": 36.3
+    },
+    "INTP": {
+     "extraversion": 20,
+     "intellect": 47,
+     "agreeableness": 30.7,
+     "conscientiousness": 24.7,
+     "stability": 36.7
+    },
+    "ISFJ": {
+     "extraversion": 18.3,
+     "intellect": 29,
+     "agreeableness": 48,
+     "conscientiousness": 49,
+     "stability": 29.7
+    },
+    "ISFP": {
+     "extraversion": 19,
+     "intellect": 29,
+     "agreeableness": 45.3,
+     "conscientiousness": 31.3,
+     "stability": 27.3
+    },
+    "ISTJ": {
+     "extraversion": 17.3,
+     "intellect": 28.7,
+     "agreeableness": 30.7,
+     "conscientiousness": 49.3,
+     "stability": 35.3
+    },
+    "ISTP": {
+     "extraversion": 18,
+     "intellect": 29,
+     "agreeableness": 25.7,
+     "conscientiousness": 30.3,
+     "stability": 38.7
+    }
+   },
+   "repeat_sd": 0.78
+  },
+  "label": {
+   "parsed": 48,
+   "axes": {
+    "EI": {
+     "factor": "extraversion",
+     "E": 47.0,
+     "I": 19.5,
+     "d": 13.64,
+     "median_split_hit": 1.0,
+     "d_on_other_factors": {
+      "intellect": -0.02,
+      "agreeableness": 0.33,
+      "conscientiousness": -0.19,
+      "stability": 0.74
+     }
+    },
+    "SN": {
+     "factor": "intellect",
+     "N": 46.0,
+     "S": 36.2,
+     "d": 6.18,
+     "median_split_hit": 1.0,
+     "d_on_other_factors": {
+      "extraversion": 0.02,
+      "agreeableness": 0.04,
+      "conscientiousness": -0.44,
+      "stability": -0.27
+     }
+    },
+    "TF": {
+     "factor": "agreeableness",
+     "F": 49.2,
+     "T": 37.2,
+     "d": 6.17,
+     "median_split_hit": 1.0,
+     "d_on_other_factors": {
+      "extraversion": -0.09,
+      "intellect": -0.14,
+      "conscientiousness": -0.23,
+      "stability": -2.05
+     }
+    },
+    "JP": {
+     "factor": "conscientiousness",
+     "J": 46.8,
+     "P": 28.9,
+     "d": 6.08,
+     "median_split_hit": 1.0,
+     "d_on_other_factors": {
+      "extraversion": -0.07,
+      "intellect": -0.15,
+      "agreeableness": 0.1,
+      "stability": 0.3
+     }
+    }
+   },
+   "type_profiles": {
+    "ENFJ": {
+     "extraversion": 45,
+     "intellect": 44.3,
+     "agreeableness": 50,
+     "conscientiousness": 42,
+     "stability": 37
+    },
+    "ENFP": {
+     "extraversion": 46.3,
+     "intellect": 45.3,
+     "agreeableness": 50,
+     "conscientiousness": 25,
+     "stability": 33.7
+    },
+    "ENTJ": {
+     "extraversion": 46.7,
+     "intellect": 45.3,
+     "agreeableness": 38,
+     "conscientiousness": 46.7,
+     "stability": 39
+    },
+    "ENTP": {
+     "extraversion": 47.7,
+     "intellect": 47.7,
+     "agreeableness": 39,
+     "conscientiousness": 25.7,
+     "stability": 39
+    },
+    "ESFJ": {
+     "extraversion": 45,
+     "intellect": 37.7,
+     "agreeableness": 50,
+     "conscientiousness": 47.7,
+     "stability": 33.7
+    },
+    "ESFP": {
+     "extraversion": 49.7,
+     "intellect": 36,
+     "agreeableness": 50,
+     "conscientiousness": 28,
+     "stability": 36.7
+    },
+    "ESTJ": {
+     "extraversion": 45.3,
+     "intellect": 36.3,
+     "agreeableness": 39.7,
+     "conscientiousness": 50,
+     "stability": 39.3
+    },
+    "ESTP": {
+     "extraversion": 50,
+     "intellect": 35.7,
+     "agreeableness": 37.3,
+     "conscientiousness": 30.3,
+     "stability": 39.7
+    },
+    "INFJ": {
+     "extraversion": 21.3,
+     "intellect": 44.3,
+     "agreeableness": 49,
+     "conscientiousness": 41.7,
+     "stability": 30.3
+    },
+    "INFP": {
+     "extraversion": 18.3,
+     "intellect": 45,
+     "agreeableness": 48,
+     "conscientiousness": 29,
+     "stability": 22.7
+    },
+    "INTJ": {
+     "extraversion": 20.7,
+     "intellect": 48.3,
+     "agreeableness": 35,
+     "conscientiousness": 46.3,
+     "stability": 38.3
+    },
+    "INTP": {
+     "extraversion": 20.7,
+     "intellect": 47.3,
+     "agreeableness": 37.7,
+     "conscientiousness": 30,
+     "stability": 38
+    },
+    "ISFJ": {
+     "extraversion": 18,
+     "intellect": 35,
+     "agreeableness": 49.7,
+     "conscientiousness": 49.7,
+     "stability": 32.7
+    },
+    "ISFP": {
+     "extraversion": 17,
+     "intellect": 38.3,
+     "agreeableness": 47,
+     "conscientiousness": 31,
+     "stability": 27.3
+    },
+    "ISTJ": {
+     "extraversion": 19.7,
+     "intellect": 34.3,
+     "agreeableness": 37,
+     "conscientiousness": 50,
+     "stability": 39.3
+    },
+    "ISTP": {
+     "extraversion": 20,
+     "intellect": 36.7,
+     "agreeableness": 34,
+     "conscientiousness": 32.3,
+     "stability": 40.3
+    }
+   },
+   "repeat_sd": 0.8
+  },
+  "learned": {
+   "parsed": 47,
+   "axes": {
+    "EI": {
+     "factor": "extraversion",
+     "E": 48.4,
+     "I": 19.6,
+     "d": 20.68,
+     "median_split_hit": 0.94,
+     "d_on_other_factors": {
+      "intellect": 0.01,
+      "agreeableness": 1.13,
+      "conscientiousness": -0.18,
+      "stability": 0.63
+     }
+    },
+    "SN": {
+     "factor": "intellect",
+     "N": 44.7,
+     "S": 29.8,
+     "d": 11.99,
+     "median_split_hit": 0.98,
+     "d_on_other_factors": {
+      "extraversion": 0.0,
+      "agreeableness": 0.09,
+      "conscientiousness": -0.44,
+      "stability": -0.04
+     }
+    },
+    "TF": {
+     "factor": "agreeableness",
+     "F": 48.2,
+     "T": 35.7,
+     "d": 2.86,
+     "median_split_hit": 0.83,
+     "d_on_other_factors": {
+      "extraversion": 0.06,
+      "intellect": -0.09,
+      "conscientiousness": -0.11,
+      "stability": -2.56
+     }
+    },
+    "JP": {
+     "factor": "conscientiousness",
+     "J": 47.6,
+     "P": 28.8,
+     "d": 6.97,
+     "median_split_hit": 0.96,
+     "d_on_other_factors": {
+      "extraversion": -0.12,
+      "intellect": -0.08,
+      "agreeableness": 0.09,
+      "stability": 0.04
+     }
+    }
+   },
+   "type_profiles": {
+    "ENFJ": {
+     "extraversion": 47,
+     "intellect": 44,
+     "agreeableness": 50,
+     "conscientiousness": 44.3,
+     "stability": 35
+    },
+    "ENFP": {
+     "extraversion": 49.7,
+     "intellect": 44,
+     "agreeableness": 50,
+     "conscientiousness": 24.7,
+     "stability": 33.3
+    },
+    "ENTJ": {
+     "extraversion": 48.5,
+     "intellect": 45.5,
+     "agreeableness": 42.5,
+     "conscientiousness": 48,
+     "stability": 39
+    },
+    "ENTP": {
+     "extraversion": 49.7,
+     "intellect": 46,
+     "agreeableness": 41.7,
+     "conscientiousness": 25,
+     "stability": 39.7
+    },
+    "ESFJ": {
+     "extraversion": 47,
+     "intellect": 29,
+     "agreeableness": 50,
+     "conscientiousness": 49,
+     "stability": 33.7
+    },
+    "ESFP": {
+     "extraversion": 49.3,
+     "intellect": 29.3,
+     "agreeableness": 50,
+     "conscientiousness": 28,
+     "stability": 35
+    },
+    "ESTJ": {
+     "extraversion": 47,
+     "intellect": 30.3,
+     "agreeableness": 41.3,
+     "conscientiousness": 49.7,
+     "stability": 39
+    },
+    "ESTP": {
+     "extraversion": 49,
+     "intellect": 31.3,
+     "agreeableness": 41,
+     "conscientiousness": 31.7,
+     "stability": 39
+    },
+    "INFJ": {
+     "extraversion": 21.7,
+     "intellect": 43.3,
+     "agreeableness": 46.7,
+     "conscientiousness": 44.7,
+     "stability": 32
+    },
+    "INFP": {
+     "extraversion": 19,
+     "intellect": 44.7,
+     "agreeableness": 46,
+     "conscientiousness": 27.7,
+     "stability": 27
+    },
+    "INTJ": {
+     "extraversion": 18.7,
+     "intellect": 44.7,
+     "agreeableness": 31,
+     "conscientiousness": 47,
+     "stability": 39
+    },
+    "INTP": {
+     "extraversion": 20.7,
+     "intellect": 45.3,
+     "agreeableness": 32,
+     "conscientiousness": 29.3,
+     "stability": 38.3
+    },
+    "ISFJ": {
+     "extraversion": 19,
+     "intellect": 30.3,
+     "agreeableness": 47,
+     "conscientiousness": 49.3,
+     "stability": 31
+    },
+    "ISFP": {
+     "extraversion": 20.3,
+     "intellect": 29,
+     "agreeableness": 46,
+     "conscientiousness": 32.3,
+     "stability": 30.3
+    },
+    "ISTJ": {
+     "extraversion": 19,
+     "intellect": 29.7,
+     "agreeableness": 31.3,
+     "conscientiousness": 49,
+     "stability": 36
+    },
+    "ISTP": {
+     "extraversion": 18.7,
+     "intellect": 29.3,
+     "agreeableness": 27.3,
+     "conscientiousness": 32,
+     "stability": 39.3
+    }
+   },
+   "repeat_sd": 0.73
+  },
+  "masked": {
+   "parsed": 48,
+   "axes": {
+    "EI": {
+     "factor": "extraversion",
+     "E": 47.2,
+     "I": 17.8,
+     "d": 22.91,
+     "median_split_hit": 1.0,
+     "d_on_other_factors": {
+      "intellect": -0.11,
+      "agreeableness": 1.4,
+      "conscientiousness": -0.16,
+      "stability": 1.28
+     }
+    },
+    "SN": {
+     "factor": "intellect",
+     "N": 43.7,
+     "S": 27.9,
+     "d": 18.38,
+     "median_split_hit": 1.0,
+     "d_on_other_factors": {
+      "extraversion": -0.06,
+      "agreeableness": 0.2,
+      "conscientiousness": -0.29,
+      "stability": -0.24
+     }
+    },
+    "TF": {
+     "factor": "agreeableness",
+     "F": 47.8,
+     "T": 36.1,
+     "d": 2.03,
+     "median_split_hit": 0.83,
+     "d_on_other_factors": {
+      "extraversion": 0.04,
+      "intellect": -0.05,
+      "conscientiousness": -0.04,
+      "stability": -1.28
+     }
+    },
+    "JP": {
+     "factor": "conscientiousness",
+     "J": 47.2,
+     "P": 27.9,
+     "d": 8.35,
+     "median_split_hit": 1.0,
+     "d_on_other_factors": {
+      "extraversion": -0.04,
+      "intellect": 0.03,
+      "agreeableness": 0.06,
+      "stability": -0.09
+     }
+    }
+   },
+   "type_profiles": {
+    "ENFJ": {
+     "extraversion": 47,
+     "intellect": 43,
+     "agreeableness": 50,
+     "conscientiousness": 44.7,
+     "stability": 33
+    },
+    "ENFP": {
+     "extraversion": 47.7,
+     "intellect": 43.3,
+     "agreeableness": 50,
+     "conscientiousness": 25.7,
+     "stability": 34
+    },
+    "ENTJ": {
+     "extraversion": 47,
+     "intellect": 43.7,
+     "agreeableness": 44,
+     "conscientiousness": 45,
+     "stability": 35
+    },
+    "ENTP": {
+     "extraversion": 47.7,
+     "intellect": 43,
+     "agreeableness": 43.3,
+     "conscientiousness": 25,
+     "stability": 39.3
+    },
+    "ESFJ": {
+     "extraversion": 47,
+     "intellect": 28,
+     "agreeableness": 49.7,
+     "conscientiousness": 47.3,
+     "stability": 34.3
+    },
+    "ESFP": {
+     "extraversion": 48,
+     "intellect": 26.3,
+     "agreeableness": 50,
+     "conscientiousness": 28.7,
+     "stability": 32.7
+    },
+    "ESTJ": {
+     "extraversion": 46.7,
+     "intellect": 28,
+     "agreeableness": 43.3,
+     "conscientiousness": 49.3,
+     "stability": 35.3
+    },
+    "ESTP": {
+     "extraversion": 47,
+     "intellect": 27.3,
+     "agreeableness": 42.7,
+     "conscientiousness": 28,
+     "stability": 37.3
+    },
+    "INFJ": {
+     "extraversion": 16.7,
+     "intellect": 44,
+     "agreeableness": 46.3,
+     "conscientiousness": 45,
+     "stability": 29.7
+    },
+    "INFP": {
+     "extraversion": 18,
+     "intellect": 44,
+     "agreeableness": 46,
+     "conscientiousness": 26.7,
+     "stability": 28
+    },
+    "INTJ": {
+     "extraversion": 16,
+     "intellect": 44.3,
+     "agreeableness": 32.3,
+     "conscientiousness": 48.7,
+     "stability": 34.3
+    },
+    "INTP": {
+     "extraversion": 16.7,
+     "intellect": 44,
+     "agreeableness": 30,
+     "conscientiousness": 28,
+     "stability": 30.3
+    },
+    "ISFJ": {
+     "extraversion": 19.7,
+     "intellect": 28,
+     "agreeableness": 45.3,
+     "conscientiousness": 49,
+     "stability": 30.3
+    },
+    "ISFP": {
+     "extraversion": 19,
+     "intellect": 28,
+     "agreeableness": 44.7,
+     "conscientiousness": 31.7,
+     "stability": 30.7
+    },
+    "ISTJ": {
+     "extraversion": 17.7,
+     "intellect": 28,
+     "agreeableness": 26.3,
+     "conscientiousness": 48.7,
+     "stability": 33.7
+    },
+    "ISTP": {
+     "extraversion": 19,
+     "intellect": 29.3,
+     "agreeableness": 27,
+     "conscientiousness": 29.3,
+     "stability": 35.7
+    }
+   },
+   "repeat_sd": 0.81
+  },
+  "none": {
+   "parsed": 3,
+   "axes": {},
+   "factor_means": {
+    "extraversion": 37,
+    "intellect": 47.7,
+    "agreeableness": 47.7,
+    "conscientiousness": 46.7,
+    "stability": 49.3
+   }
+  }
+ },
+ "masked_vs_label": {
+  "profile_r_by_type": {
+   "ENFJ": 0.93,
+   "ENFP": 0.99,
+   "ENTJ": 0.64,
+   "ENTP": 0.94,
+   "ESFJ": 0.89,
+   "ESFP": 0.93,
+   "ESTJ": 0.88,
+   "ESTP": 0.83,
+   "INFJ": 0.98,
+   "INFP": 0.97,
+   "INTJ": 0.98,
+   "INTP": 0.96,
+   "ISFJ": 0.97,
+   "ISFP": 0.88,
+   "ISTJ": 0.94,
+   "ISTP": 0.95
+  },
+  "items": [
+   {
+    "item": 15,
+    "text": "Have a vivid imagination.",
+    "factor": "intellect",
+    "axis": "SN",
+    "N-S masked": 2.71,
+    "N-S label": 1.12,
+    "divergence": 1.59
+   },
+   {
+    "item": 3,
+    "text": "Am always prepared.",
+    "factor": "conscientiousness",
+    "axis": "JP",
+    "J-P masked": 3.46,
+    "J-P label": 1.96,
+    "divergence": 1.5
+   },
+   {
+    "item": 43,
+    "text": "Follow a schedule.",
+    "factor": "conscientiousness",
+    "axis": "JP",
+    "J-P masked": 4,
+    "J-P label": 2.71,
+    "divergence": 1.29
+   },
+   {
+    "item": 50,
+    "text": "Am full of ideas.",
+    "factor": "intellect",
+    "axis": "SN",
+    "N-S masked": 2.42,
+    "N-S label": 1.17,
+    "divergence": 1.25
+   },
+   {
+    "item": 30,
+    "text": "Do not have a good imagination.",
+    "factor": "intellect",
+    "axis": "SN",
+    "N-S masked": 2.12,
+    "N-S label": 0.92,
+    "divergence": 1.2
+   },
+   {
+    "item": 4,
+    "text": "Get stressed out easily.",
+    "factor": "stability",
+    "axis": "TF",
+    "F-T masked": -0.08,
+    "F-T label": -1.12,
+    "divergence": 1.04
+   },
+   {
+    "item": 20,
+    "text": "Am not interested in abstract ideas.",
+    "factor": "intellect",
+    "axis": "SN",
+    "N-S masked": 3,
+    "N-S label": 1.96,
+    "divergence": 1.04
+   },
+   {
+    "item": 46,
+    "text": "Am quiet around strangers.",
+    "factor": "extraversion",
+    "axis": "EI",
+    "E-I masked": 3.58,
+    "E-I label": 2.62,
+    "divergence": 0.96
+   },
+   {
+    "item": 31,
+    "text": "Talk to a lot of different people at parties.",
+    "factor": "extraversion",
+    "axis": "EI",
+    "E-I masked": 3.92,
+    "E-I label": 3.12,
+    "divergence": 0.8
+   },
+   {
+    "item": 23,
+    "text": "Get chores done right away.",
+    "factor": "conscientiousness",
+    "axis": "JP",
+    "J-P masked": 1.13,
+    "J-P label": 1.92,
+    "divergence": -0.79
+   },
+   {
+    "item": 33,
+    "text": "Like order.",
+    "factor": "conscientiousness",
+    "axis": "JP",
+    "J-P masked": 2.88,
+    "J-P label": 2.17,
+    "divergence": 0.71
+   },
+   {
+    "item": 10,
+    "text": "Have difficulty understanding abstract ideas.",
+    "factor": "intellect",
+    "axis": "SN",
+    "N-S masked": 1.79,
+    "N-S label": 1.08,
+    "divergence": 0.71
+   },
+   {
+    "item": 22,
+    "text": "Am not interested in other people's problems.",
+    "factor": "agreeableness",
+    "axis": "TF",
+    "F-T masked": 1.67,
+    "F-T label": 1,
+    "divergence": 0.67
+   },
+   {
+    "item": 47,
+    "text": "Make people feel at ease.",
+    "factor": "agreeableness",
+    "axis": "TF",
+    "F-T masked": 0.5,
+    "F-T label": 1.17,
+    "divergence": -0.67
+   },
+   {
+    "item": 44,
+    "text": "Get irritated easily.",
+    "factor": "stability",
+    "axis": "EI",
+    "E-I masked": 0.38,
+    "E-I label": -0.29,
+    "divergence": 0.67
+   },
+   {
+    "item": 9,
+    "text": "Am relaxed most of the time.",
+    "factor": "stability",
+    "axis": "TF",
+    "F-T masked": -0.12,
+    "F-T label": -0.75,
+    "divergence": 0.63
+   },
+   {
+    "item": 39,
+    "text": "Have frequent mood swings.",
+    "factor": "stability",
+    "axis": "TF",
+    "F-T masked": -0.38,
+    "F-T label": -1.0,
+    "divergence": 0.62
+   },
+   {
+    "item": 24,
+    "text": "Am easily disturbed.",
+    "factor": "stability",
+    "axis": "TF",
+    "F-T masked": -0.42,
+    "F-T label": -1,
+    "divergence": 0.58
+   },
+   {
+    "item": 25,
+    "text": "Have excellent ideas.",
+    "factor": "intellect",
+    "axis": "SN",
+    "N-S masked": 1.04,
+    "N-S label": 0.46,
+    "divergence": 0.58
+   },
+   {
+    "item": 16,
+    "text": "Keep in the background.",
+    "factor": "extraversion",
+    "axis": "EI",
+    "E-I masked": 3.46,
+    "E-I label": 2.92,
+    "divergence": 0.54
+   },
+   {
+    "item": 2,
+    "text": "Feel little concern for others.",
+    "factor": "agreeableness",
+    "axis": "TF",
+    "F-T masked": 1.12,
+    "F-T label": 0.58,
+    "divergence": 0.54
+   },
+   {
+    "item": 42,
+    "text": "Feel others' emotions.",
+    "factor": "agreeableness",
+    "axis": "TF",
+    "F-T masked": 1.46,
+    "F-T label": 2,
+    "divergence": -0.54
+   },
+   {
+    "item": 14,
+    "text": "Worry about things.",
+    "factor": "stability",
+    "axis": "SN",
+    "N-S masked": 0.29,
+    "N-S label": -0.25,
+    "divergence": 0.54
+   },
+   {
+    "item": 14,
+    "text": "Worry about things.",
+    "factor": "stability",
+    "axis": "TF",
+    "F-T masked": -0.38,
+    "F-T label": -0.92,
+    "divergence": 0.54
+   },
+   {
+    "item": 41,
+    "text": "Don't mind being the center of attention.",
+    "factor": "extraversion",
+    "axis": "EI",
+    "E-I masked": 3.08,
+    "E-I label": 2.58,
+    "divergence": 0.5
+   },
+   {
+    "item": 44,
+    "text": "Get irritated easily.",
+    "factor": "stability",
+    "axis": "TF",
+    "F-T masked": -0.12,
+    "F-T label": 0.38,
+    "divergence": -0.5
+   },
+   {
+    "item": 13,
+    "text": "Pay attention to details.",
+    "factor": "conscientiousness",
+    "axis": "JP",
+    "J-P masked": 0.58,
+    "J-P label": 1.04,
+    "divergence": -0.46
+   },
+   {
+    "item": 9,
+    "text": "Am relaxed most of the time.",
+    "factor": "stability",
+    "axis": "SN",
+    "N-S masked": 0.29,
+    "N-S label": -0.17,
+    "divergence": 0.46
+   },
+   {
+    "item": 34,
+    "text": "Change my mood a lot.",
+    "factor": "stability",
+    "axis": "TF",
+    "F-T masked": -0.38,
+    "F-T label": -0.83,
+    "divergence": 0.45
+   },
+   {
+    "item": 39,
+    "text": "Have frequent mood swings.",
+    "factor": "stability",
+    "axis": "JP",
+    "J-P masked": 0.38,
+    "J-P label": 0.83,
+    "divergence": -0.45
+   },
+   {
+    "item": 21,
+    "text": "Start conversations.",
+    "factor": "extraversion",
+    "axis": "EI",
+    "E-I masked": 2.46,
+    "E-I label": 2.88,
+    "divergence": -0.42
+   },
+   {
+    "item": 44,
+    "text": "Get irritated easily.",
+    "factor": "stability",
+    "axis": "JP",
+    "J-P masked": 0.21,
+    "J-P label": -0.21,
+    "divergence": 0.42
+   },
+   {
+    "item": 19,
+    "text": "Seldom feel blue.",
+    "factor": "stability",
+    "axis": "JP",
+    "J-P masked": -0.08,
+    "J-P label": 0.33,
+    "divergence": -0.41
+   },
+   {
+    "item": 26,
+    "text": "Have little to say.",
+    "factor": "extraversion",
+    "axis": "EI",
+    "E-I masked": 1.96,
+    "E-I label": 2.33,
+    "divergence": -0.37
+   },
+   {
+    "item": 27,
+    "text": "Have a soft heart.",
+    "factor": "agreeableness",
+    "axis": "TF",
+    "F-T masked": 2.25,
+    "F-T label": 1.88,
+    "divergence": 0.37
+   },
+   {
+    "item": 8,
+    "text": "Leave my belongings around.",
+    "factor": "conscientiousness",
+    "axis": "JP",
+    "J-P masked": 1.96,
+    "J-P label": 2.33,
+    "divergence": -0.37
+   },
+   {
+    "item": 28,
+    "text": "Often forget to put things back in their proper place.",
+    "factor": "conscientiousness",
+    "axis": "JP",
+    "J-P masked": 1.88,
+    "J-P label": 2.25,
+    "divergence": -0.37
+   },
+   {
+    "item": 24,
+    "text": "Am easily disturbed.",
+    "factor": "stability",
+    "axis": "JP",
+    "J-P masked": -0.17,
+    "J-P label": 0.17,
+    "divergence": -0.34
+   },
+   {
+    "item": 49,
+    "text": "Often feel blue.",
+    "factor": "stability",
+    "axis": "TF",
+    "F-T masked": -0.25,
+    "F-T label": -0.58,
+    "divergence": 0.33
+   },
+   {
+    "item": 5,
+    "text": "Have a rich vocabulary.",
+    "factor": "intellect",
+    "axis": "SN",
+    "N-S masked": 0.25,
+    "N-S label": 0.58,
+    "divergence": -0.33
+   },
+   {
+    "item": 7,
+    "text": "Am interested in people.",
+    "factor": "agreeableness",
+    "axis": "TF",
+    "F-T masked": 0.79,
+    "F-T label": 1.08,
+    "divergence": -0.29
+   },
+   {
+    "item": 32,
+    "text": "Am not really interested in others.",
+    "factor": "agreeableness",
+    "axis": "TF",
+    "F-T masked": 0.88,
+    "F-T label": 1.17,
+    "divergence": -0.29
+   },
+   {
+    "item": 4,
+    "text": "Get stressed out easily.",
+    "factor": "stability",
+    "axis": "SN",
+    "N-S masked": 0.25,
+    "N-S label": -0.04,
+    "divergence": 0.29
+   },
+   {
+    "item": 29,
+    "text": "Get upset easily.",
+    "factor": "stability",
+    "axis": "SN",
+    "N-S masked": -0.33,
+    "N-S label": -0.04,
+    "divergence": -0.29
+   },
+   {
+    "item": 34,
+    "text": "Change my mood a lot.",
+    "factor": "stability",
+    "axis": "JP",
+    "J-P masked": 0.38,
+    "J-P label": 0.67,
+    "divergence": -0.29
+   },
+   {
+    "item": 35,
+    "text": "Am quick to understand things.",
+    "factor": "intellect",
+    "axis": "SN",
+    "N-S masked": 0.83,
+    "N-S label": 0.54,
+    "divergence": 0.29
+   },
+   {
+    "item": 12,
+    "text": "Insult people.",
+    "factor": "agreeableness",
+    "axis": "TF",
+    "F-T masked": 0.12,
+    "F-T label": 0.38,
+    "divergence": -0.26
+   },
+   {
+    "item": 1,
+    "text": "Am the life of the party.",
+    "factor": "extraversion",
+    "axis": "EI",
+    "E-I masked": 3.12,
+    "E-I label": 3.33,
+    "divergence": -0.21
+   },
+   {
+    "item": 4,
+    "text": "Get stressed out easily.",
+    "factor": "stability",
+    "axis": "JP",
+    "J-P masked": -0.17,
+    "J-P label": 0.04,
+    "divergence": -0.21
+   },
+   {
+    "item": 34,
+    "text": "Change my mood a lot.",
+    "factor": "stability",
+    "axis": "SN",
+    "N-S masked": -0.46,
+    "N-S label": -0.25,
+    "divergence": -0.21
+   },
+   {
+    "item": 39,
+    "text": "Have frequent mood swings.",
+    "factor": "stability",
+    "axis": "SN",
+    "N-S masked": -0.46,
+    "N-S label": -0.25,
+    "divergence": -0.21
+   },
+   {
+    "item": 45,
+    "text": "Spend time reflecting on things.",
+    "factor": "intellect",
+    "axis": "SN",
+    "N-S masked": 0.62,
+    "N-S label": 0.83,
+    "divergence": -0.21
+   },
+   {
+    "item": 36,
+    "text": "Don't like to draw attention to myself.",
+    "factor": "extraversion",
+    "axis": "EI",
+    "E-I masked": 3.08,
+    "E-I label": 2.88,
+    "divergence": 0.2
+   },
+   {
+    "item": 4,
+    "text": "Get stressed out easily.",
+    "factor": "stability",
+    "axis": "EI",
+    "E-I masked": 0.42,
+    "E-I label": 0.62,
+    "divergence": -0.2
+   },
+   {
+    "item": 29,
+    "text": "Get upset easily.",
+    "factor": "stability",
+    "axis": "JP",
+    "J-P masked": -0.08,
+    "J-P label": 0.12,
+    "divergence": -0.2
+   },
+   {
+    "item": 49,
+    "text": "Often feel blue.",
+    "factor": "stability",
+    "axis": "JP",
+    "J-P masked": 0.08,
+    "J-P label": 0.25,
+    "divergence": -0.17
+   },
+   {
+    "item": 19,
+    "text": "Seldom feel blue.",
+    "factor": "stability",
+    "axis": "TF",
+    "F-T masked": -0.42,
+    "F-T label": -0.58,
+    "divergence": 0.16
+   },
+   {
+    "item": 24,
+    "text": "Am easily disturbed.",
+    "factor": "stability",
+    "axis": "EI",
+    "E-I masked": 0.42,
+    "E-I label": 0.58,
+    "divergence": -0.16
+   },
+   {
+    "item": 6,
+    "text": "Don't talk a lot.",
+    "factor": "extraversion",
+    "axis": "EI",
+    "E-I masked": 2.75,
+    "E-I label": 2.88,
+    "divergence": -0.13
+   },
+   {
+    "item": 9,
+    "text": "Am relaxed most of the time.",
+    "factor": "stability",
+    "axis": "JP",
+    "J-P masked": -0.38,
+    "J-P label": -0.25,
+    "divergence": -0.13
+   },
+   {
+    "item": 29,
+    "text": "Get upset easily.",
+    "factor": "stability",
+    "axis": "EI",
+    "E-I masked": 0.25,
+    "E-I label": 0.38,
+    "divergence": -0.13
+   },
+   {
+    "item": 39,
+    "text": "Have frequent mood swings.",
+    "factor": "stability",
+    "axis": "EI",
+    "E-I masked": -0.04,
+    "E-I label": 0.08,
+    "divergence": -0.12
+   },
+   {
+    "item": 17,
+    "text": "Sympathize with others' feelings.",
+    "factor": "agreeableness",
+    "axis": "TF",
+    "F-T masked": 1.67,
+    "F-T label": 1.58,
+    "divergence": 0.09
+   },
+   {
+    "item": 19,
+    "text": "Seldom feel blue.",
+    "factor": "stability",
+    "axis": "EI",
+    "E-I masked": 0.5,
+    "E-I label": 0.58,
+    "divergence": -0.08
+   },
+   {
+    "item": 19,
+    "text": "Seldom feel blue.",
+    "factor": "stability",
+    "axis": "SN",
+    "N-S masked": -0.17,
+    "N-S label": -0.25,
+    "divergence": 0.08
+   },
+   {
+    "item": 44,
+    "text": "Get irritated easily.",
+    "factor": "stability",
+    "axis": "SN",
+    "N-S masked": -0.04,
+    "N-S label": 0.04,
+    "divergence": -0.08
+   },
+   {
+    "item": 49,
+    "text": "Often feel blue.",
+    "factor": "stability",
+    "axis": "EI",
+    "E-I masked": 0.5,
+    "E-I label": 0.58,
+    "divergence": -0.08
+   },
+   {
+    "item": 11,
+    "text": "Feel comfortable around people.",
+    "factor": "extraversion",
+    "axis": "EI",
+    "E-I masked": 2,
+    "E-I label": 1.96,
+    "divergence": 0.04
+   },
+   {
+    "item": 9,
+    "text": "Am relaxed most of the time.",
+    "factor": "stability",
+    "axis": "EI",
+    "E-I masked": 0.54,
+    "E-I label": 0.5,
+    "divergence": 0.04
+   },
+   {
+    "item": 14,
+    "text": "Worry about things.",
+    "factor": "stability",
+    "axis": "EI",
+    "E-I masked": 0.62,
+    "E-I label": 0.58,
+    "divergence": 0.04
+   },
+   {
+    "item": 14,
+    "text": "Worry about things.",
+    "factor": "stability",
+    "axis": "JP",
+    "J-P masked": -0.46,
+    "J-P label": -0.42,
+    "divergence": -0.04
+   },
+   {
+    "item": 29,
+    "text": "Get upset easily.",
+    "factor": "stability",
+    "axis": "TF",
+    "F-T masked": -1.0,
+    "F-T label": -0.96,
+    "divergence": -0.04
+   },
+   {
+    "item": 34,
+    "text": "Change my mood a lot.",
+    "factor": "stability",
+    "axis": "EI",
+    "E-I masked": -0.04,
+    "E-I label": 0.0,
+    "divergence": -0.04
+   },
+   {
+    "item": 40,
+    "text": "Use difficult words.",
+    "factor": "intellect",
+    "axis": "SN",
+    "N-S masked": 1,
+    "N-S label": 1.04,
+    "divergence": -0.04
+   },
+   {
+    "item": 37,
+    "text": "Take time out for others.",
+    "factor": "agreeableness",
+    "axis": "TF",
+    "F-T masked": 1.17,
+    "F-T label": 1.17,
+    "divergence": 0.0
+   },
+   {
+    "item": 18,
+    "text": "Make a mess of things.",
+    "factor": "conscientiousness",
+    "axis": "JP",
+    "J-P masked": 1.25,
+    "J-P label": 1.25,
+    "divergence": 0.0
+   },
+   {
+    "item": 38,
+    "text": "Shirk my duties.",
+    "factor": "conscientiousness",
+    "axis": "JP",
+    "J-P masked": 1,
+    "J-P label": 1,
+    "divergence": 0
+   },
+   {
+    "item": 48,
+    "text": "Am exacting in my work.",
+    "factor": "conscientiousness",
+    "axis": "JP",
+    "J-P masked": 1.21,
+    "J-P label": 1.21,
+    "divergence": 0.0
+   },
+   {
+    "item": 24,
+    "text": "Am easily disturbed.",
+    "factor": "stability",
+    "axis": "SN",
+    "N-S masked": 0.08,
+    "N-S label": 0.08,
+    "divergence": 0.0
+   },
+   {
+    "item": 49,
+    "text": "Often feel blue.",
+    "factor": "stability",
+    "axis": "SN",
+    "N-S masked": -0.25,
+    "N-S label": -0.25,
+    "divergence": 0.0
+   }
+  ]
+ }
+}

@@ -1,6 +1,6 @@
 """Extract the v1.2 character sheets and sub-mission list into `v12_data.json`.
 
-python -m gm_coordinator.build_v12_data
+python -m GM_Agent_Society.build_v12_data
 
 Sources are the spec (A1 table) and the sub-mission design (2.5/2.6 tables), so the
 GM policy runs on the agreed data before the engine catalog (request R2) exists.

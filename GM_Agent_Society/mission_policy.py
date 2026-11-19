@@ -8,6 +8,7 @@ recorded so analysis can use it as a covariate; adjust only after achievement ra
 """
 import json
 import random
+from itertools import product
 from pathlib import Path
 
 DATA = Path(__file__).with_name("v12_data.json")
@@ -73,19 +74,34 @@ def _pick(players, candidates, fits, received, prefer_conflict, rng):
     rng.shuffle(order)
     for player in order:
         aid = player["agent_id"]
-        chosen[aid] = {}
-        for tier in reversed(TIERS):
-            # A player never gets two missions that conflict with each other.
-            options = [m for m in candidates[aid][tier] if fits(player, m, tier)
-                       and not any(conflicts(m, mine) for mine in chosen[aid].values())]
-            if not options:
-                raise ValueError(f"no feasible {tier} mission for {aid}")
 
-            def score(mission_id):
-                cross = sum(conflicts(mission_id, other) for bid, picks in chosen.items() if bid != aid
-                            for other in picks.values())
-                return (-cross if prefer_conflict else 0, received.get(aid, []).count(mission_id), rng.random())
-            chosen[aid][tier] = min(options, key=score)
+        def score(mission_id):
+            cross = sum(conflicts(mission_id, other) for bid, picks in chosen.items() if bid != aid
+                        for other in picks.values())
+            return (-cross if prefer_conflict else 0, received.get(aid, []).count(mission_id), rng.random())
+
+        chosen[aid] = {}
+        try:
+            for tier in reversed(TIERS):
+                # A player never gets two missions that conflict with each other.
+                options = [m for m in candidates[aid][tier] if fits(player, m, tier)
+                           and not any(conflicts(m, mine) for mine in chosen[aid].values())]
+                if not options:
+                    raise LookupError(tier)
+                chosen[aid][tier] = min(options, key=score)
+        except LookupError:
+            # [FIX-C7] The greedy pick (상, then 중, then 하) dead-ends when every lower-tier
+            # candidate conflicts with a mission already picked, though another combination of
+            # the 3x3x3 candidates works. Only then search the combinations; the greedy result
+            # (and its random stream) is unchanged whenever it succeeds.
+            tiers = list(reversed(TIERS))
+            pools = [[m for m in candidates[aid][tier] if fits(player, m, tier)] for tier in tiers]
+            combos = [combo for combo in product(*pools)
+                      if not any(conflicts(a, b) for i, a in enumerate(combo) for b in combo[i + 1:])]
+            if not combos:
+                raise ValueError(f"no feasible mission set for {aid}") from None
+            best = min(combos, key=lambda combo: tuple(map(sum, zip(*(score(m) for m in combo)))))
+            chosen[aid] = dict(zip(tiers, best))
     return chosen
 
 
@@ -134,7 +150,45 @@ def _targets(chosen, players, characters, catalog, indirect_clue_ids, places, rn
     return targets
 
 
-def plan_missions(players, characters, candidates, seed, received=None, indirect_clue_ids=(), data=None):
+def _interference(chosen, players, catalog, places, rng, allowed=None, blockable=None):
+    """[FIX-C21] user decision 2026-11-12 (engine A53): about a third of the players get one interference mission,
+    in place of their 하 mission. I1 names one of the target's 중/상 missions (never told to the holder); I3 a
+    place; I4 a player; I2 nobody. Which players and which missions are drawn by seed."""
+    ids = sorted(m for m, x in catalog.items() if x.get("category") == "interference" and not x.get("retired")
+                 and (allowed is None or m in allowed))   # allowed: what the engine says this game can hold
+    if not ids or len(players) < 3:
+        return {}
+    order = sorted(p["agent_id"] for p in players)
+    holders = rng.sample(order, round(len(order) / 3))
+    by_agent = {p["agent_id"]: p for p in players}
+    out = {}
+    for n, aid in enumerate(holders):
+        mission_id = ids[(rng.randrange(len(ids)) + n) % len(ids)]
+        others = [b for b in order if b != aid]
+        if mission_id == "I1":   # [FIX-C23] engine A58: name a count mission (blockable), trying the others in turn
+            for other in rng.sample(others, len(others)):
+                pool = [chosen[other][t] for t in ("중", "상")
+                        if (chosen[other][t] in blockable if blockable is not None
+                            else catalog[chosen[other][t]].get("judged") != "end")]
+                if pool:
+                    out[(aid, mission_id)] = {"player": other, "character": by_agent[other]["character_id"],
+                                              "mission_id": rng.choice(pool)}
+                    break
+            if (aid, mission_id) in out:
+                continue
+            mission_id = "I2"
+        if mission_id == "I4":
+            other = rng.choice(others)
+            out[(aid, mission_id)] = {"player": other, "character": by_agent[other]["character_id"]}
+        elif mission_id == "I3":
+            out[(aid, mission_id)] = {"place": rng.randrange(len(places))}
+        else:
+            out[(aid, mission_id)] = {}
+    return out
+
+
+def plan_missions(players, characters, candidates, seed, received=None, indirect_clue_ids=(), data=None, interference=None,
+                  blockable=None):
     """players: [{agent_id, character_id, mbti}]; characters: [{character_id, mbti, controller}];
     candidates: {agent_id: {tier: [mission_id x3]}}; received: {agent_id: [past mission_ids]}."""
     data = data or load_data()
@@ -167,6 +221,11 @@ def plan_missions(players, characters, candidates, seed, received=None, indirect
     reason = (f"충돌 {c_conf}쌍으로 상호작용을 만드는 충돌안 선택" if selected == "conflict"
               else "후보 안에서 충돌 짝을 만들 수 없어 신규성안 선택")
     targets = _targets(chosen, players, characters, catalog, indirect_clue_ids, data["places"], rng)
+    extra = _interference(chosen, players, catalog, data["places"], random.Random(f"interference:{seed}"), interference,
+                          blockable)   # [FIX-C23]
+    for (aid, mission_id), target in extra.items():   # [FIX-C21] the 하 slot becomes an interference mission
+        chosen[aid]["하"] = mission_id
+        targets[(aid, mission_id)] = target
     assignments = {}
     for player in players:
         aid = player["agent_id"]

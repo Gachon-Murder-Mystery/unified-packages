@@ -1,0 +1,78 @@
+{
+ "101": [],
+ "102": [],
+ "103": [
+  {
+   "kind": "player",
+   "cycle": 8,
+   "slot": 3
+  }
+ ],
+ "104": [
+  {
+   "kind": "player",
+   "cycle": 8,
+   "return_cycle": 14,
+   "slot": 5
+  }
+ ],
+ "105": [
+  {
+   "kind": "gm",
+   "cycle": 8
+  }
+ ],
+ "106": [
+  {
+   "kind": "gm",
+   "cycle": 8,
+   "return_cycle": 14
+  }
+ ],
+ "107": [
+  {
+   "kind": "player",
+   "cycle": 6,
+   "slot": 1
+  },
+  {
+   "kind": "player",
+   "cycle": 10,
+   "return_cycle": 16,
+   "slot": 4
+  },
+  {
+   "kind": "player",
+   "cycle": 12,
+   "return_cycle": 20,
+   "slot": 8
+  },
+  {
+   "kind": "player",
+   "cycle": 14,
+   "slot": 6
+  }
+ ],
+ "108": [
+  {
+   "kind": "gm",
+   "cycle": 4
+  },
+  {
+   "kind": "gm",
+   "cycle": 8
+  },
+  {
+   "kind": "gm",
+   "cycle": 12
+  },
+  {
+   "kind": "gm",
+   "cycle": 16
+  },
+  {
+   "kind": "gm",
+   "cycle": 20
+  }
+ ]
+}

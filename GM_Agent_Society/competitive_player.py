@@ -7,7 +7,7 @@ Formats are assumptions until the engine's hypothesis-question API (A-9) lands:
         {"id", "kind": "indirect", "type": "weapon_room", "weapon", "room"}
   A narrated indirect clue from a player ({"id", "kind": "narrated", "text"}) carries no
   parsable fact for a scripted player and is kept only as an ID.
-- question: {"action": "question", "target_id", "approach": "question"|"negotiate"|"interrogate"|"threaten",
+- question: {"action": "question", "target_id", "approach": "question"|"persuade"|"interrogate"|"threaten",
              "hypothesis": {"suspect", "weapon", "place"}}
 - response: {"form": "none"|"ambiguous"|"definite"|"definite+ambiguous", "statements": [...], "reason"}
 Negotiation (A-10) is not scripted yet: its message format is still open.
@@ -239,9 +239,20 @@ class CompetitivePlayer:
 
     def _soft(self, hypothesis, prior, limit):
         """Up to `limit` non-definite statements: true ambiguous ones first, then least-connecting indirect clues."""
-        about = self._about()
-        statements = [{"kind": "ambiguous", "category": cat, "candidate": cand}
-                      for cat, cand in hypothesis.items() if (cat, cand) not in about]
+        # [FIX-C11] ambiguous = pair exclusion (engine A18): anchor = a candidate my definite clue
+        # rules out, partner = the asker's hypothesis candidate in another category. Anchors the
+        # asker probably holds already go first (they reveal least).
+        own = sorted((c for c in self.held if c["kind"] == "definite"),
+                     key=lambda c: ((c["category"], c["candidate"]) not in prior, c["id"]))
+        statements, seen = [], set()
+        for c in own:
+            for cat, cand in hypothesis.items():
+                if cat == c["category"]:
+                    continue
+                pair = dict(sorted({c["category"]: c["candidate"], cat: cand}.items()))
+                if tuple(pair.items()) not in seen:
+                    seen.add(tuple(pair.items()))
+                    statements.append({"kind": "ambiguous", "pair": pair})
         indirect = sorted((c for c in self.held if c["kind"] == "indirect"),
                           key=lambda c: (self._connects(c, prior), c["type"] != "companion", c["id"]))
         statements += [{"kind": "indirect", "clue_id": c["id"], "narration": self.narrate(c)} for c in indirect]
@@ -296,7 +307,7 @@ class RandomPlayer(CompetitivePlayer):
         kind = self.rng.choice(options)
         if kind == "question":
             return {"action": "question", "target_id": self.rng.choice(people)["id"],
-                    "approach": self.rng.choice(["question", "negotiate", "interrogate", "threaten"]),
+                    "approach": self.rng.choice(["question", "persuade", "interrogate", "threaten"]),
                     "hypothesis": {c: self.rng.randrange(n) for c, n in SIZES.items()}}
         return {"action": "explore", "target": "room"} if kind == "explore" else {"action": "prepare"}
 

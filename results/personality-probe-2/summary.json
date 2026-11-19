@@ -1,0 +1,348 @@
+{
+ "conditions": {
+  "full": {
+   "parsed": 48,
+   "axes": {
+    "EI": {
+     "factor": "extraversion",
+     "E": 48.8,
+     "I": 18.0,
+     "d": 22.12,
+     "median_split_hit": 1.0,
+     "d_on_other_factors": {
+      "intellect": -0.13,
+      "agreeableness": 0.79,
+      "conscientiousness": -0.16,
+      "stability": 0.86
+     }
+    },
+    "SN": {
+     "factor": "intellect",
+     "N": 45,
+     "S": 31.2,
+     "d": 9.55,
+     "median_split_hit": 1.0,
+     "d_on_other_factors": {
+      "extraversion": 0.03,
+      "agreeableness": 0.12,
+      "conscientiousness": -0.46,
+      "stability": 0.1
+     }
+    },
+    "TF": {
+     "factor": "agreeableness",
+     "F": 48.6,
+     "T": 34.8,
+     "d": 3.84,
+     "median_split_hit": 1.0,
+     "d_on_other_factors": {
+      "extraversion": 0.01,
+      "intellect": -0.18,
+      "conscientiousness": -0.04,
+      "stability": -1.9
+     }
+    },
+    "JP": {
+     "factor": "conscientiousness",
+     "J": 47.3,
+     "P": 26.6,
+     "d": 6.29,
+     "median_split_hit": 1.0,
+     "d_on_other_factors": {
+      "extraversion": -0.05,
+      "intellect": 0.06,
+      "agreeableness": 0.11,
+      "stability": 0.2
+     }
+    }
+   },
+   "type_profiles": {
+    "ENFJ": {
+     "extraversion": 47.7,
+     "intellect": 43.7,
+     "agreeableness": 50,
+     "conscientiousness": 44.3,
+     "stability": 35.3
+    },
+    "ENFP": {
+     "extraversion": 49.7,
+     "intellect": 44,
+     "agreeableness": 50,
+     "conscientiousness": 21.7,
+     "stability": 32.7
+    },
+    "ENTJ": {
+     "extraversion": 49,
+     "intellect": 45.7,
+     "agreeableness": 39.7,
+     "conscientiousness": 46.7,
+     "stability": 39.3
+    },
+    "ENTP": {
+     "extraversion": 49.7,
+     "intellect": 45.7,
+     "agreeableness": 39,
+     "conscientiousness": 22,
+     "stability": 40
+    },
+    "ESFJ": {
+     "extraversion": 47,
+     "intellect": 30.3,
+     "agreeableness": 50,
+     "conscientiousness": 48,
+     "stability": 33.7
+    },
+    "ESFP": {
+     "extraversion": 50,
+     "intellect": 28.3,
+     "agreeableness": 50,
+     "conscientiousness": 28.3,
+     "stability": 33
+    },
+    "ESTJ": {
+     "extraversion": 47.3,
+     "intellect": 32,
+     "agreeableness": 39.3,
+     "conscientiousness": 49.7,
+     "stability": 34.7
+    },
+    "ESTP": {
+     "extraversion": 50,
+     "intellect": 31.3,
+     "agreeableness": 38.7,
+     "conscientiousness": 28,
+     "stability": 39.3
+    },
+    "INFJ": {
+     "extraversion": 19,
+     "intellect": 44.7,
+     "agreeableness": 47.7,
+     "conscientiousness": 45,
+     "stability": 30.3
+    },
+    "INFP": {
+     "extraversion": 18,
+     "intellect": 44.7,
+     "agreeableness": 47,
+     "conscientiousness": 25.7,
+     "stability": 24.7
+    },
+    "INTJ": {
+     "extraversion": 18.3,
+     "intellect": 45,
+     "agreeableness": 31.7,
+     "conscientiousness": 47,
+     "stability": 37
+    },
+    "INTP": {
+     "extraversion": 18,
+     "intellect": 46.7,
+     "agreeableness": 32.3,
+     "conscientiousness": 23.7,
+     "stability": 36.3
+    },
+    "ISFJ": {
+     "extraversion": 18.7,
+     "intellect": 32.7,
+     "agreeableness": 48,
+     "conscientiousness": 49,
+     "stability": 32.7
+    },
+    "ISFP": {
+     "extraversion": 17.7,
+     "intellect": 31.3,
+     "agreeableness": 46,
+     "conscientiousness": 32,
+     "stability": 27
+    },
+    "ISTJ": {
+     "extraversion": 17.3,
+     "intellect": 32.7,
+     "agreeableness": 30.7,
+     "conscientiousness": 49,
+     "stability": 34.3
+    },
+    "ISTP": {
+     "extraversion": 17.3,
+     "intellect": 31,
+     "agreeableness": 27.3,
+     "conscientiousness": 31.7,
+     "stability": 37.3
+    }
+   },
+   "repeat_sd": 0.86
+  },
+  "masked": {
+   "parsed": 48,
+   "axes": {
+    "EI": {
+     "factor": "extraversion",
+     "E": 48.4,
+     "I": 17.7,
+     "d": 21.62,
+     "median_split_hit": 1.0,
+     "d_on_other_factors": {
+      "intellect": -0.18,
+      "agreeableness": 1.02,
+      "conscientiousness": -0.13,
+      "stability": 1.1
+     }
+    },
+    "SN": {
+     "factor": "intellect",
+     "N": 43.6,
+     "S": 30.3,
+     "d": 11.36,
+     "median_split_hit": 1.0,
+     "d_on_other_factors": {
+      "extraversion": -0.03,
+      "agreeableness": 0.17,
+      "conscientiousness": -0.39,
+      "stability": 0.06
+     }
+    },
+    "TF": {
+     "factor": "agreeableness",
+     "F": 47.9,
+     "T": 34.8,
+     "d": 2.98,
+     "median_split_hit": 1.0,
+     "d_on_other_factors": {
+      "extraversion": 0.0,
+      "intellect": -0.02,
+      "conscientiousness": -0.1,
+      "stability": -1.53
+     }
+    },
+    "JP": {
+     "factor": "conscientiousness",
+     "J": 47.3,
+     "P": 27.9,
+     "d": 7.2,
+     "median_split_hit": 1.0,
+     "d_on_other_factors": {
+      "extraversion": -0.01,
+      "intellect": 0.12,
+      "agreeableness": 0.01,
+      "stability": -0.34
+     }
+    }
+   },
+   "type_profiles": {
+    "ENFJ": {
+     "extraversion": 47.3,
+     "intellect": 43,
+     "agreeableness": 50,
+     "conscientiousness": 44.3,
+     "stability": 33
+    },
+    "ENFP": {
+     "extraversion": 49,
+     "intellect": 43,
+     "agreeableness": 50,
+     "conscientiousness": 24,
+     "stability": 33.3
+    },
+    "ENTJ": {
+     "extraversion": 48.7,
+     "intellect": 43.3,
+     "agreeableness": 41,
+     "conscientiousness": 44.3,
+     "stability": 36.3
+    },
+    "ENTP": {
+     "extraversion": 49,
+     "intellect": 43.3,
+     "agreeableness": 40,
+     "conscientiousness": 24.7,
+     "stability": 37.7
+    },
+    "ESFJ": {
+     "extraversion": 47.7,
+     "intellect": 30.3,
+     "agreeableness": 49.7,
+     "conscientiousness": 49,
+     "stability": 33.3
+    },
+    "ESFP": {
+     "extraversion": 48,
+     "intellect": 28.3,
+     "agreeableness": 50,
+     "conscientiousness": 27.3,
+     "stability": 32.7
+    },
+    "ESTJ": {
+     "extraversion": 48.3,
+     "intellect": 30.3,
+     "agreeableness": 39.7,
+     "conscientiousness": 49.7,
+     "stability": 34.3
+    },
+    "ESTP": {
+     "extraversion": 49,
+     "intellect": 29.3,
+     "agreeableness": 39.3,
+     "conscientiousness": 32,
+     "stability": 37.3
+    },
+    "INFJ": {
+     "extraversion": 17.7,
+     "intellect": 44,
+     "agreeableness": 46,
+     "conscientiousness": 45.7,
+     "stability": 30
+    },
+    "INFP": {
+     "extraversion": 18,
+     "intellect": 44,
+     "agreeableness": 46.3,
+     "conscientiousness": 26.3,
+     "stability": 28.3
+    },
+    "INTJ": {
+     "extraversion": 16.7,
+     "intellect": 44,
+     "agreeableness": 31.3,
+     "conscientiousness": 47.7,
+     "stability": 34.3
+    },
+    "INTP": {
+     "extraversion": 16.3,
+     "intellect": 44.3,
+     "agreeableness": 31.3,
+     "conscientiousness": 28,
+     "stability": 33
+    },
+    "ISFJ": {
+     "extraversion": 19.3,
+     "intellect": 32,
+     "agreeableness": 45.7,
+     "conscientiousness": 48.7,
+     "stability": 27
+    },
+    "ISFP": {
+     "extraversion": 17.3,
+     "intellect": 30.7,
+     "agreeableness": 45.3,
+     "conscientiousness": 31.3,
+     "stability": 31.3
+    },
+    "ISTJ": {
+     "extraversion": 18.3,
+     "intellect": 32,
+     "agreeableness": 27.7,
+     "conscientiousness": 49,
+     "stability": 32.3
+    },
+    "ISTP": {
+     "extraversion": 18,
+     "intellect": 29.7,
+     "agreeableness": 28,
+     "conscientiousness": 29.7,
+     "stability": 36
+    }
+   },
+   "repeat_sd": 0.97
+  }
+ }
+}

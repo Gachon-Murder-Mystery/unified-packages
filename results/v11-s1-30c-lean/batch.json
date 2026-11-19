@@ -1,0 +1,183 @@
+{
+  "config": {
+    "start_seed": 201,
+    "isolated": false
+  },
+  "target_count": 16,
+  "attempts": [
+    {
+      "seed": 201,
+      "status": "completed",
+      "directory": "F:\\multi_agent_AI_Game\\unified-packages-v11\\runs\\v11-s1-30c-lean\\seed-201\\attempt-1",
+      "started_at": 1794982862.4579768,
+      "conditions": {
+        "backend": "codex",
+        "model": "gpt-6.1-terra via Codex CLI (reasoning medium)",
+        "deadline": 30,
+        "time_limit": null,
+        "unsolved_score": -10,
+        "parallel": true,
+        "question_timeout": 600,
+        "trade_timeout": 600,
+        "interaction_order": "simultaneous",
+        "clue_flow": "boosted",
+        "lean": true,
+        "profile": "v10",
+        "daily_pace": true,
+        "assignment": {
+          "society:360973d2d1f04be5a29e4fecad1b3ad6": 9,
+          "society:7241989bc71f4a6a8ffcaaa8ea01a0ca": 8,
+          "society:a24eaf68dcac4ab5bd99fce0e22ad03c": 11,
+          "society:978f9f7082f2453a89fb1c2c4c6b3ed1": 10,
+          "society:97d42b82e4984e0891151b1f706551aa": 1,
+          "society:556c441bd62d42c6acae24d6e2c45d46": 3,
+          "society:dcb8f1320c704f2986951b279a1b33a4": 7,
+          "society:9ddb24f997c94401835b9a167450c8ac": 6,
+          "society:bec6e95ffa094d03a42d987c390a7cf1": 4,
+          "society:a45c1b33d9c14bf7b47286d16a1fa330": 2,
+          "society:3000d5eff8514841b69a4c569e0512f7": 5,
+          "society:5cdfb4ae4913464a927964d9211471b2": 0
+        }
+      },
+      "quota_used_at_start": 51.0,
+      "returncode": 0,
+      "finished_at": 1794986988.474488,
+      "game_id": "605bf7df-b297-41a4-87d9-8f25c62f9207",
+      "resolution": "deadline",
+      "cycles": 30,
+      "winners": [],
+      "model_calls": 1287,
+      "model_fallbacks": 0,
+      "full_record_file": "F:\\multi_agent_AI_Game\\unified-packages-v11\\runs\\605bf7df-b297-41a4-87d9-8f25c62f9207\\full-record.json",
+      "summary_file": "F:\\multi_agent_AI_Game\\unified-packages-v11\\runs\\605bf7df-b297-41a4-87d9-8f25c62f9207\\summary.json",
+      "quota_used": 3.0
+    },
+    {
+      "seed": 202,
+      "status": "completed",
+      "directory": "F:\\multi_agent_AI_Game\\unified-packages-v11\\runs\\v11-s1-30c-lean\\seed-202\\attempt-1",
+      "started_at": 1794986991.408093,
+      "conditions": {
+        "backend": "codex",
+        "model": "gpt-6.1-terra via Codex CLI (reasoning medium)",
+        "deadline": 30,
+        "time_limit": null,
+        "unsolved_score": -10,
+        "parallel": true,
+        "question_timeout": 600,
+        "trade_timeout": 600,
+        "interaction_order": "simultaneous",
+        "clue_flow": "boosted",
+        "lean": true,
+        "profile": "v10",
+        "daily_pace": true,
+        "assignment": {
+          "society:513937d8408d4cd2bc0c3ed53ecf544b": 6,
+          "society:360973d2d1f04be5a29e4fecad1b3ad6": 10,
+          "society:7241989bc71f4a6a8ffcaaa8ea01a0ca": 3,
+          "society:a24eaf68dcac4ab5bd99fce0e22ad03c": 1,
+          "society:978f9f7082f2453a89fb1c2c4c6b3ed1": 9,
+          "society:a1c16bbb711e489782ea2258dc59bb11": 8,
+          "society:556c441bd62d42c6acae24d6e2c45d46": 5,
+          "society:9ddb24f997c94401835b9a167450c8ac": 4,
+          "society:a45c1b33d9c14bf7b47286d16a1fa330": 7,
+          "society:df3c817324ce472db63d29795602d897": 11,
+          "society:5cdfb4ae4913464a927964d9211471b2": 2,
+          "society:8e47d406c0334cdfb7201b5e3859b816": 0
+        }
+      },
+      "quota_used_at_start": 54.0,
+      "returncode": 0,
+      "finished_at": 1794990959.2503016,
+      "game_id": "d302ea36-f55b-4a17-a13b-58108bf915ff",
+      "resolution": "winner",
+      "cycles": 30,
+      "winners": [
+        {
+          "agent_id": "society:a1c16bbb711e489782ea2258dc59bb11",
+          "character_id": 8,
+          "winner": true,
+          "rank": 1,
+          "guess": {
+            "suspect": 0,
+            "weapon": 0,
+            "place": 0
+          }
+        }
+      ],
+      "model_calls": 1234,
+      "model_fallbacks": 2,
+      "full_record_file": "F:\\multi_agent_AI_Game\\unified-packages-v11\\runs\\d302ea36-f55b-4a17-a13b-58108bf915ff\\full-record.json",
+      "summary_file": "F:\\multi_agent_AI_Game\\unified-packages-v11\\runs\\d302ea36-f55b-4a17-a13b-58108bf915ff\\summary.json",
+      "quota_used": 3.0
+    },
+    {
+      "seed": 203,
+      "status": "completed",
+      "directory": "F:\\multi_agent_AI_Game\\unified-packages-v11\\runs\\v11-s1-30c-lean\\seed-203\\attempt-1",
+      "started_at": 1794990962.0967953,
+      "conditions": {
+        "backend": "codex",
+        "model": "gpt-6.1-terra via Codex CLI (reasoning medium)",
+        "deadline": 30,
+        "time_limit": null,
+        "unsolved_score": -10,
+        "parallel": true,
+        "question_timeout": 600,
+        "trade_timeout": 600,
+        "interaction_order": "simultaneous",
+        "clue_flow": "boosted",
+        "lean": true,
+        "profile": "v10",
+        "daily_pace": true,
+        "assignment": {
+          "society:513937d8408d4cd2bc0c3ed53ecf544b": 7,
+          "society:7241989bc71f4a6a8ffcaaa8ea01a0ca": 9,
+          "society:978f9f7082f2453a89fb1c2c4c6b3ed1": 0,
+          "society:a1c16bbb711e489782ea2258dc59bb11": 5,
+          "society:97d42b82e4984e0891151b1f706551aa": 2,
+          "society:556c441bd62d42c6acae24d6e2c45d46": 8,
+          "society:dcb8f1320c704f2986951b279a1b33a4": 6,
+          "society:bec6e95ffa094d03a42d987c390a7cf1": 3,
+          "society:a45c1b33d9c14bf7b47286d16a1fa330": 11,
+          "society:df3c817324ce472db63d29795602d897": 4,
+          "society:3000d5eff8514841b69a4c569e0512f7": 1,
+          "society:8e47d406c0334cdfb7201b5e3859b816": 10
+        }
+      },
+      "quota_used_at_start": 57.0,
+      "returncode": 0,
+      "finished_at": 1794994336.561728,
+      "game_id": "9fd912c3-1877-444e-893b-56fb2d768b3c",
+      "resolution": "winner",
+      "cycles": 25,
+      "winners": [
+        {
+          "agent_id": "society:978f9f7082f2453a89fb1c2c4c6b3ed1",
+          "character_id": 0,
+          "winner": true,
+          "rank": 1,
+          "guess": {
+            "suspect": 8,
+            "weapon": 0,
+            "place": 7
+          }
+        }
+      ],
+      "model_calls": 1085,
+      "model_fallbacks": 0,
+      "full_record_file": "F:\\multi_agent_AI_Game\\unified-packages-v11\\runs\\9fd912c3-1877-444e-893b-56fb2d768b3c\\full-record.json",
+      "summary_file": "F:\\multi_agent_AI_Game\\unified-packages-v11\\runs\\9fd912c3-1877-444e-893b-56fb2d768b3c\\summary.json",
+      "quota_used": 3.0
+    }
+  ],
+  "pool_db": "F:\\multi_agent_AI_Game\\unified-packages-v11\\runs\\v11-s1-30c-lean\\pool.sqlite3",
+  "memory_dir": "F:\\multi_agent_AI_Game\\unified-packages-v11\\runs\\v11-s1-30c-lean\\agent-memory",
+  "pacing": {
+    "reset_at": 1795242060.0,
+    "day_start": 1794982860.0,
+    "day_used_start": 51.0,
+    "day_budget": 16.33,
+    "last_used": 60.0
+  }
+}

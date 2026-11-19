@@ -1,0 +1,141 @@
+{
+  "config": {
+    "start_seed": 101,
+    "isolated": false
+  },
+  "target_count": 8,
+  "attempts": [
+    {
+      "seed": 101,
+      "status": "completed",
+      "directory": "F:\\multi_agent_AI_Game\\unified-packages-v11\\runs\\v11b-fault-30c-lean\\seed-101\\attempt-1",
+      "started_at": 1794994656.767402,
+      "conditions": {
+        "backend": "codex",
+        "model": "gpt-6.1-terra via Codex CLI (reasoning medium)",
+        "deadline": 30,
+        "time_limit": null,
+        "unsolved_score": -10,
+        "parallel": true,
+        "question_timeout": 600,
+        "trade_timeout": 600,
+        "interaction_order": "simultaneous",
+        "clue_flow": "boosted",
+        "lean": true,
+        "profile": "v10",
+        "daily_pace": true
+      },
+      "quota_used_at_start": 60.0,
+      "returncode": 0,
+      "finished_at": 1794998239.7146447,
+      "game_id": "b3be5e1a-8af8-4bd4-ac21-b97619c19b66",
+      "resolution": "winner",
+      "cycles": 30,
+      "winners": [
+        {
+          "agent_id": "society:d4a9aa161c33451f92965dd04f33ce88",
+          "character_id": 11,
+          "winner": true,
+          "rank": 1,
+          "guess": {
+            "suspect": 6,
+            "weapon": 3,
+            "place": 4
+          }
+        }
+      ],
+      "model_calls": 1090,
+      "model_fallbacks": 0,
+      "full_record_file": "F:\\multi_agent_AI_Game\\unified-packages-v11\\runs\\b3be5e1a-8af8-4bd4-ac21-b97619c19b66\\full-record.json",
+      "summary_file": "F:\\multi_agent_AI_Game\\unified-packages-v11\\runs\\b3be5e1a-8af8-4bd4-ac21-b97619c19b66\\summary.json",
+      "quota_used": 2.0
+    },
+    {
+      "seed": 102,
+      "status": "completed",
+      "directory": "F:\\multi_agent_AI_Game\\unified-packages-v11\\runs\\v11b-fault-30c-lean\\seed-102\\attempt-1",
+      "started_at": 1794998242.737465,
+      "conditions": {
+        "backend": "codex",
+        "model": "gpt-6.1-terra via Codex CLI (reasoning medium)",
+        "deadline": 30,
+        "time_limit": null,
+        "unsolved_score": -10,
+        "parallel": true,
+        "question_timeout": 600,
+        "trade_timeout": 600,
+        "interaction_order": "simultaneous",
+        "clue_flow": "boosted",
+        "lean": true,
+        "profile": "v10",
+        "daily_pace": true
+      },
+      "quota_used_at_start": 62.0,
+      "returncode": 0,
+      "finished_at": 1795002029.385988,
+      "game_id": "8da9dba8-b992-4d1b-a2c2-bcd0a66b7e3e",
+      "resolution": "winner",
+      "cycles": 30,
+      "winners": [
+        {
+          "agent_id": "society:88bbddca3c004433bd48dc932fe8219a",
+          "character_id": 9,
+          "winner": true,
+          "rank": 4,
+          "guess": {
+            "suspect": 6,
+            "weapon": 5,
+            "place": 2
+          }
+        },
+        {
+          "agent_id": "society:c46f8ee1ff974181a0eb46eecf9e770c",
+          "character_id": 8,
+          "winner": true,
+          "rank": 3,
+          "guess": {
+            "suspect": 6,
+            "weapon": 5,
+            "place": 2
+          }
+        },
+        {
+          "agent_id": "society:26f1c01edfb742fea16d579da072e622",
+          "character_id": 7,
+          "winner": true,
+          "rank": 2,
+          "guess": {
+            "suspect": 6,
+            "weapon": 5,
+            "place": 2
+          }
+        },
+        {
+          "agent_id": "society:8d13194eacb449e28773b451056c2a97",
+          "character_id": 2,
+          "winner": true,
+          "rank": 1,
+          "guess": {
+            "suspect": 6,
+            "weapon": 5,
+            "place": 2
+          }
+        }
+      ],
+      "model_calls": 1261,
+      "model_fallbacks": 0,
+      "full_record_file": "F:\\multi_agent_AI_Game\\unified-packages-v11\\runs\\8da9dba8-b992-4d1b-a2c2-bcd0a66b7e3e\\full-record.json",
+      "summary_file": "F:\\multi_agent_AI_Game\\unified-packages-v11\\runs\\8da9dba8-b992-4d1b-a2c2-bcd0a66b7e3e\\summary.json",
+      "quota_used": 3.0
+    }
+  ],
+  "pool_db": "F:\\multi_agent_AI_Game\\unified-packages-v11\\runs\\v11b-fault-30c-lean\\pool.sqlite3",
+  "memory_dir": "F:\\multi_agent_AI_Game\\unified-packages-v11\\runs\\v11b-fault-30c-lean\\agent-memory",
+  "pacing": {
+    "reset_at": 1795242060.0,
+    "day_start": 1794982860.0,
+    "day_used_start": 51.0,
+    "day_budget": 16.33,
+    "last_used": 65.0
+  }
+}

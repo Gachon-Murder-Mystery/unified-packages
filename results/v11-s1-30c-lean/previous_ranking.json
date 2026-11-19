@@ -1,0 +1,114 @@
+[
+ {
+  "agent_id": "society:7241989bc71f4a6a8ffcaaa8ea01a0ca",
+  "mbti": "ENFJ",
+  "score": 160,
+  "games": 5,
+  "average": 32.0
+ },
+ {
+  "agent_id": "society:5cdfb4ae4913464a927964d9211471b2",
+  "mbti": "INFP",
+  "score": 137,
+  "games": 5,
+  "average": 27.4
+ },
+ {
+  "agent_id": "society:556c441bd62d42c6acae24d6e2c45d46",
+  "mbti": "INTP",
+  "score": 136,
+  "games": 5,
+  "average": 27.2
+ },
+ {
+  "agent_id": "society:978f9f7082f2453a89fb1c2c4c6b3ed1",
+  "mbti": "ENFP",
+  "score": 136,
+  "games": 5,
+  "average": 27.2
+ },
+ {
+  "agent_id": "society:97d42b82e4984e0891151b1f706551aa",
+  "mbti": "ISTP",
+  "score": 135,
+  "games": 5,
+  "average": 27.0
+ },
+ {
+  "agent_id": "society:a24eaf68dcac4ab5bd99fce0e22ad03c",
+  "mbti": "ENTP",
+  "score": 137,
+  "games": 6,
+  "average": 22.83
+ },
+ {
+  "agent_id": "society:9ddb24f997c94401835b9a167450c8ac",
+  "mbti": "INTJ",
+  "score": 50,
+  "games": 5,
+  "average": 10.0
+ },
+ {
+  "agent_id": "society:dcb8f1320c704f2986951b279a1b33a4",
+  "mbti": "ESFP",
+  "score": 27,
+  "games": 4,
+  "average": 6.75
+ },
+ {
+  "agent_id": "society:513937d8408d4cd2bc0c3ed53ecf544b",
+  "mbti": "ISFJ",
+  "score": 23,
+  "games": 5,
+  "average": 4.6
+ },
+ {
+  "agent_id": "society:a1c16bbb711e489782ea2258dc59bb11",
+  "mbti": "ISTJ",
+  "score": 20,
+  "games": 5,
+  "average": 4.0
+ },
+ {
+  "agent_id": "society:3000d5eff8514841b69a4c569e0512f7",
+  "mbti": "ESFJ",
+  "score": 13,
+  "games": 6,
+  "average": 2.17
+ },
+ {
+  "agent_id": "society:bec6e95ffa094d03a42d987c390a7cf1",
+  "mbti": "ESTP",
+  "score": 5,
+  "games": 5,
+  "average": 1.0
+ },
+ {
+  "agent_id": "society:8e47d406c0334cdfb7201b5e3859b816",
+  "mbti": "INFJ",
+  "score": 0,
+  "games": 5,
+  "average": 0.0
+ },
+ {
+  "agent_id": "society:df3c817324ce472db63d29795602d897",
+  "mbti": "ESTJ",
+  "score": 0,
+  "games": 4,
+  "average": 0.0
+ },
+ {
+  "agent_id": "society:a45c1b33d9c14bf7b47286d16a1fa330",
+  "mbti": "ISFP",
+  "score": -9,
+  "games": 5,
+  "average": -1.8
+ },
+ {
+  "agent_id": "society:360973d2d1f04be5a29e4fecad1b3ad6",
+  "mbti": "ENTJ",
+  "score": -10,
+  "games": 5,
+  "average": -2.0
+ }
+]

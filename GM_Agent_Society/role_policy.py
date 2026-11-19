@@ -1,5 +1,8 @@
 from contextvars import ContextVar
 REQUESTED_PLAYERS = ContextVar("requested_players", default=None)
+# [FIX-C24] 2026-11-16: an experiment schedule fixes this game's participants and characters ({agent_id: character_id}).
+# A module value, not a ContextVar: the GM plans in a worker thread, which does not see the driver's context.
+ASSIGNMENT = None
 """GM Role assignment (spec v1.3 C1; defaults in C6). Pure functions; no engine, no LLM.
 
 Character i holds job i, so choosing a job for an agent chooses its character.
@@ -69,8 +72,11 @@ def player_count(agents, history, requested=None):
 
 
 def choose_participants(agents, history, count, rng):
-    """The agents with the fewest games play; the rest (most played) sit out. Ties by seed."""
-    order = sorted(agents, key=lambda aid: (len(history.get(aid, [])), rng.random()))
+    """The agents with the fewest games play; the rest (most played) sit out. Ties by seed.
+    [FIX-A41] only completed games count: an aborted game (operator_stopped) is rerun, so counting it
+    left the v9 main campaign at 8-10 games per agent instead of 9 each."""
+    order = sorted(agents, key=lambda aid: (sum(1 for h in history.get(aid, []) if h.get("resolution") != "operator_stopped"),
+                                            rng.random()))
     return sorted(order[:count])
 
 
@@ -146,8 +152,36 @@ def _summary(assignment, history, competency):
             "strength_spread": pstdev(strengths) if len(strengths) >= 2 else None}
 
 
+def scheduled_plan(agents, history, seed, assignment):
+    """[FIX-C24] The experiment's schedule (equal games per agent, every job once per scenario) decides; the usual
+    exploration plan for the same participants is kept as the compared alternative."""
+    assignment = {aid: int(job) for aid, job in assignment.items()}
+    missing = sorted(set(assignment) - set(agents))
+    if missing:
+        raise ValueError(f"scheduled agents not available: {missing}")
+    jobs = list(assignment.values())
+    if len(set(jobs)) != len(jobs) or not all(0 <= j < JOBS for j in jobs) or not MIN_PLAYERS <= len(jobs) <= MAX_PLAYERS:
+        raise ValueError(f"invalid schedule: {assignment}")
+    participants = sorted(assignment)
+    rng = random.Random(seed)
+    competency = {aid: c for aid in participants if (c := job_competency(history.get(aid, []))) is not None}
+    explore = _explore(participants, history, rng)
+    info = _summary(assignment, history, competency)
+    return {"participants": participants, "player_count": len(participants),
+            "activation": [{"agent_id": aid, "character_id": assignment[aid]} for aid in participants],
+            "alternatives": [{"id": "schedule", "summary": "실험 배정표: 시나리오 동안 출전 횟수가 같고 직업을 한 번씩 맡도록 고정",
+                              "reason": f"출전 {len(participants)}명, 탐색 비율 {info['exploratory_ratio']:.2f}"},
+                             {"id": "explore", "summary": "참가자마다 덜 플레이한 직업을 무작위로 배정",
+                              "reason": f"탐색 비율 {_summary(explore, history, competency)['exploratory_ratio']:.2f}"}],
+            "selected_alternative": "schedule", "reason": "실험 배정표(C24)에 따른 출전자·직업",
+            "exploratory": {aid: exploratory(aid, assignment[aid], history) for aid in participants},
+            "covered_agents": sorted(competency), **info}
+
+
 def plan_roles(agents, history, seed, requested=None):
     """Participants, characters, two compared alternatives and the reason (spec C1, D1)."""
+    if ASSIGNMENT:   # [FIX-C24]
+        return scheduled_plan(agents, history, seed, ASSIGNMENT)
     rng = random.Random(seed)
     count = player_count(agents, history, requested)
     participants = choose_participants(agents, history, count, rng)
