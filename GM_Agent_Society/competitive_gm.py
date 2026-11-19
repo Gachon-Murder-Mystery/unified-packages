@@ -1,11 +1,15 @@
 """C-owned GM for A's competitive v1.3 engine (`mode=competitive`, ruleset competitive-v1.3).
 
-The GM is a game master, not a task planner (spec v1.3 C). Players roll by
-submitting their own actions to the engine (B: action choice + `agent/action`);
-the engine rolls the dice and adjudicates. The GM receives those dice results
-through its supervisor events and continues the scenario:
+The GM is a game master, not a task planner (spec v1.3 C). [FIX-C14] It is the master controller:
+it opens every phase, asks each player to act (REQUEST: the legal actions and targets the engine
+computed for that player), closes the negotiation stage (RELEASE), declares mechanical timeouts
+(EXPIRE) and advances (ADVANCE). The engine only referees: players submit the requested action,
+their answers and trade replies to the engine directly, the engine rolls the dice and adjudicates,
+so adjudication never waits for the GM. The GM receives the dice results through its supervisor
+events and continues the scenario:
 
-  roll results -> wait until every roll and reply is resolved -> ADVANCE
+  open phase -> REQUEST each player -> (timeouts: EXPIRE, replacement REQUEST) -> RELEASE negotiation
+  -> wait until every roll and reply is resolved -> ADVANCE
   engine-written announcement data -> ANNOUNCE as soon as it exists
   official resolution -> FINISH -> C4 REPORT with evidence
 
@@ -14,11 +18,13 @@ players (A11, C3) and never sees the case truth. Its scenario log is a private
 GM record. A successor term rebuilds the log from engine events only (C5).
 """
 import hashlib
+import json
 import time
 
 from . import gm_metrics, mission_policy, role_policy
 from .contracts import ContractError
-from .engine_v1 import AuthorityLost
+from .engine_v1 import AuthorityLost, EngineV1Error
+from .gm_memory import GMMemory, IncidentWatch
 from .settings import SETTINGS, verify_engine
 
 PHASES = ("movement", "interaction", "deduction")
@@ -30,6 +36,15 @@ class SettingsDrift(ContractError):
 
 def _code(exc):
     return getattr(exc, "code", None)
+
+
+def _transient(exc):
+    """[FIX-C15] Errors worth waiting out: engine 5xx, connection/timeouts, events still moving."""
+    if isinstance(exc, EngineV1Error):
+        return exc.status >= 500
+    if isinstance(exc, (OSError, TimeoutError)):
+        return True
+    return isinstance(exc, ContractError) and "retry synchronization" in str(exc)
 
 
 def _seed(game_id):
@@ -51,8 +66,17 @@ class CompetitiveGM:
             raise SettingsDrift("engine settings differ: " + "; ".join(self.drift))
         self.ledger = {"event_cursor": 0, "cycle": 1, "phase": "movement", "epoch": 1,
                        "rolls": [], "scenario": [], "verdicts": [], "announced": [],
-                       "faults": [], "successions": [], "human_requests": [], "decisions": []}
+                       "faults": [], "successions": [], "human_requests": [], "decisions": [],
+                       "incidents": []}
         self.reported = False
+        # [FIX-C15] my own memory (this GM agent only) and my watch over this game's progress
+        self.memory = GMMemory(self.controller_id)
+        try:   # [FIX-C20] the model-call deadline and the stuck-call remedy are this GM's to decide
+            from model_outage import MODEL_POLICY
+            MODEL_POLICY.bind(self.memory)
+        except ImportError:   # the GM package used on its own (no model in this process)
+            pass
+        self.watch = IncidentWatch(self.memory)
 
     def _call(self, route, **data):
         try:
@@ -69,8 +93,23 @@ class CompetitiveGM:
 
     def _apply(self, event):
         ledger, kind, payload = self.ledger, event["type"], event["payload"]
+        if kind == "relations_reported":    # [FIX-A35/C17] record only: never used to run the game
+            ledger.setdefault("relations", []).append(
+                {"cycle": payload.get("cycle"), "agent_id": payload.get("agent_id"), "scores": payload.get("scores") or {}})
+            return
+        if kind == "operator_action":       # [FIX-I11] a paused game is not a stalled game
+            op = payload.get("operation")
+            if op == "PAUSE":
+                self._paused_at = event.get("timestamp")
+            elif op == "RESUME" and getattr(self, "_paused_at", None) is not None:
+                self.watch.paused_for(event.get("timestamp", self._paused_at) - self._paused_at)
+                self.ledger["incidents"].append({"cycle": ledger["cycle"], "kind": "game_paused",
+                                                 "seconds": round(event.get("timestamp", 0) - self._paused_at, 1)})
+                self._paused_at = None
+            return
         if kind == "action_completed":
             result = payload["result"]
+            self.watch.acted(result.get("agent_id"))            # [FIX-C15]
             entry = {"cycle": result["cycle_id"], "phase": result["phase"], "kind": result["action"],
                      "agent_id": result["agent_id"], "event_id": event["event_id"]}
             if result["action"] in ("question", "accuse"):
@@ -200,8 +239,153 @@ class CompetitiveGM:
             published.append(item["ref"])
         return published
 
+    def _orchestrate(self, observation):
+        """[FIX-C14] Drive the open phase. Returns "ready" when the phase can advance."""
+        epoch = observation["phase_epoch"]
+        talk = observation.get("talk")
+        if talk:   # [FIX-C19/A42] the talk rooms run their fixed rounds first; a silent member is let go after the timeout
+            force = not talk["ready"] and talk["overdue"]
+            if talk["ready"] or force:
+                try:
+                    self._command(f"talk:{epoch}:{talk['round']}:{'f' if force else 'r'}", operation="TALK_NEXT",
+                                  phase_epoch=epoch, force=force)
+                except Exception as exc:
+                    if _code(exc) not in ("pending", "conflict"):
+                        raise
+                observation = self.sync()
+            if observation.get("talk"):
+                return "waiting"
+        expired = False
+        for item in observation.get("overdue", []):
+            ref = hashlib.sha1(item["ref"].encode()).hexdigest()[:12]
+            try:
+                self._command(f"expire:{item['kind']}:{ref}", operation="EXPIRE", kind=item["kind"], ref=item["ref"])
+                expired = True
+            except Exception as exc:
+                if _code(exc) != "conflict":  # settled meanwhile
+                    raise
+        if expired:
+            observation = self.sync()
+        ids = observation.get("needs_request") or []
+        if ids:
+            self.ledger["requests"] = self.ledger.get("requests", 0) + 1
+            stamp = f"{epoch}:{self.ledger['requests']}:{int(time.time() * 1000) % 10 ** 8}"
+            try:
+                issued = self._command(f"request:{stamp}", operation="REQUEST", phase_epoch=epoch, agent_ids=ids)
+                self.watch.requested(list((issued or {}).get("requested", {})))   # [FIX-C15]
+            except Exception as exc:
+                if _code(exc) != "conflict":  # the phase moved on under us
+                    raise
+                self.watch.refused("REQUEST", "conflict")
+            observation = self.sync()
+        if observation.get("ready_to_release"):
+            try:
+                self._command(f"release:{epoch}", operation="RELEASE", phase_epoch=epoch)
+            except Exception as exc:
+                if _code(exc) not in ("pending", "conflict"):
+                    raise
+                self.watch.refused("RELEASE", _code(exc))
+            observation = self.sync()
+        return "ready" if observation.get("ready_to_advance") else "waiting"
+
     def tick(self):
-        """One GM step. Returns a status string; never performs player actions."""
+        """One GM step. Returns a status string; never performs player actions.
+        [FIX-C15] Transient engine errors are waited out with the remedy my memory has learned
+        works best (retry_short / retry_long); only a long run of them ends the game."""
+        try:
+            status = self._tick()
+        except AuthorityLost:
+            raise
+        except Exception as exc:
+            if not _transient(exc):
+                raise
+            remedy = self.watch.engine_error(exc)
+            self.ledger["incidents"].append({"cycle": self.ledger["cycle"], "kind": "engine_error",
+                                             "remedy": remedy, "error": str(exc)[:200]})
+            if remedy == "escalate":
+                context = self.watch.escalation_context("engine_error", "transient engine errors did not stop")
+                context["errors"] = self.watch.engine_errors
+                self.memory.escalate("engine_error", [str(exc)[:200]], self.ledger["phase"], context)
+                raise
+            time.sleep(1 if remedy == "retry_short" else 5)
+            return "retry"
+        self.watch.engine_ok()
+        return status
+
+    RELATIONS_SUMMARY_LIMIT = 9000   # bytes; the engine's HTTP limit for a GM command body is 18,000
+
+    def relations_summary(self):
+        """[FIX-A35/C17] What the agents told me about their relationships, summarised for the record.
+        These are reports (an agent's own feeling, not verifiable facts). I never use them to assign,
+        request, advance or score anything, and they do not go into my own memory.
+        [FIX-C17b] Compact (6-character agent tags, integers) and bounded so the REPORT fits the
+        engine's request limit: when too large, the per-agent matrix and then the trend are thinned."""
+        reports = self.ledger.get("relations") or []
+        if not reports:
+            return None
+        tag = lambda aid: str(aid)[-6:]
+        latest, trend = {}, {}
+        for r in reports:
+            latest[tag(r["agent_id"])] = {tag(k): round(v) for k, v in r["scores"].items()}
+            for target, value in r["scores"].items():
+                trend.setdefault(r["cycle"], {})[(r["agent_id"], target)] = value
+        given = {a: round(sum(s.values()) / len(s), 1) for a, s in latest.items() if s}
+        received = {}
+        for a, s in latest.items():
+            for target, value in s.items():
+                received.setdefault(target, []).append(value)
+        pairs = []
+        for a, s in latest.items():
+            for b, value in s.items():
+                back = (latest.get(b) or {}).get(a)
+                if back is not None and a < b:
+                    pairs.append([a, b, value, back, abs(value - back)])
+        pairs.sort(key=lambda x: -x[4])
+        running, by_cycle = {}, []
+        for cycle in sorted(c for c in trend if c is not None):
+            running.update(trend[cycle])
+            by_cycle.append([cycle, round(sum(running.values()) / len(running), 1), len(running)])
+        out = {"kind": "reported_by_agents", "note": "each agent's own feeling; record only, not used by the GM or the engine",
+               "reports": len(reports), "agents": len(latest), "given_mean": given,
+               "received_mean": {k: round(sum(v) / len(v), 1) for k, v in received.items()},
+               "mutual": {"pairs": len(pairs), "mean_gap": round(sum(x[4] for x in pairs) / len(pairs), 1) if pairs else None,
+                          "largest_gaps": pairs[:5]},
+               "by_cycle": by_cycle, "latest": latest}
+        size = lambda o: len(json.dumps(o, ensure_ascii=False).encode("utf-8"))
+        if size(out) > self.RELATIONS_SUMMARY_LIMIT:
+            out.pop("latest")
+            out["thinned"] = ["latest"]
+        while size(out) > self.RELATIONS_SUMMARY_LIMIT and len(out["by_cycle"]) > 2:
+            out["by_cycle"] = out["by_cycle"][::2]
+            out.setdefault("thinned", []).append("by_cycle")
+        return out
+
+    def _remedy(self, key, remedy, observation):
+        """[FIX-C15] Apply one safe remedy chosen by my memory for a stalled phase."""
+        inc = self.watch.open.get(key) or {}
+        self.ledger["incidents"].append({"cycle": self.ledger["cycle"], "phase": self.ledger["phase"],
+                                         "kind": inc.get("kind"), "subject": inc.get("subject"), "remedy": remedy})
+        if remedy == "resync":
+            return self.sync()
+        if remedy == "re_request" and observation.get("needs_request"):
+            stamp = f"{observation['phase_epoch']}:re:{int(time.time() * 1000) % 10 ** 8}"
+            try:
+                issued = self._command(f"request:{stamp}", operation="REQUEST", phase_epoch=observation["phase_epoch"],
+                                       agent_ids=observation["needs_request"])
+                self.watch.requested(list((issued or {}).get("requested", {})))
+            except Exception as exc:
+                if _code(exc) != "conflict":
+                    raise
+        elif remedy == "escalate":
+            # [FIX-C16] the hand-off carries what was tried, for how long, and the progress signals
+            context = self.watch.escalation_context(key, "every safe remedy was tried; the phase still does not move")
+            self.ledger["human_requests"].append({"kind": "gm_escalation", "incident": inc.get("kind"),
+                                                  "subject": inc.get("subject"), "cycle": self.ledger["cycle"],
+                                                  **context})
+            self.memory.escalate(inc.get("kind"), inc.get("subject"), inc.get("stage"), context)
+        return observation
+
+    def _tick(self):
         observation = self.sync()
         if observation["ended"]:
             if not self.reported:
@@ -217,7 +401,12 @@ class CompetitiveGM:
         if observation["resolution"] is not None:
             self._finish(observation)
             return "ended"
-        if not self._resolved(observation):
+        if observation.get("orchestration") == "gm":   # [FIX-C14] the GM drives the phase
+            for key, remedy in self.watch.observe(observation):   # [FIX-C15] stalls -> learned remedy
+                observation = self._remedy(key, remedy, observation) or observation
+            if self._orchestrate(observation) != "ready":
+                return "waiting"
+        elif not self._resolved(observation):
             return "waiting"
         try:
             self._command(f"advance:{observation['phase_epoch']}", operation="ADVANCE",
@@ -234,6 +423,8 @@ class CompetitiveGM:
         if observation["resolution"] is not None:
             self._finish(observation)
             return "ended"
+        if observation.get("orchestration") == "gm":   # [FIX-C14] ask for the new phase at once
+            self._orchestrate(observation)
         return "advanced"
 
     # ---------- ending and C4 report ----------
@@ -272,7 +463,19 @@ class CompetitiveGM:
             events = self._call("events", after=0)["events"]
             evidence = [e["event_id"] for e in events if e["type"] in
                         ("roles_assigned", "deduction_ready", "resolution_ready", "announcement", "game_finished")]
-            self._command("report", operation="REPORT", metrics=self.metrics(observation), evidence=evidence)
+            self._command("report", operation="REPORT", metrics=self.metrics(observation), evidence=evidence,
+                          reported_relationships=self.relations_summary())   # [FIX-A35/C17]
+        for item in observation.get("pending_announcements") or []:   # [FIX-C18] tell each player its result, privately
+            if item.get("kind") == "scoreboard":
+                try:
+                    self._command(f"announce:{item['ref']}", operation="ANNOUNCE", ref=item["ref"], kind="scoreboard")
+                except Exception as exc:
+                    if _code(exc) not in ("conflict", "not_running"):
+                        raise
+        if not self.reported:   # [FIX-C15] one summary per game in my own memory
+            self.watch.close_game()                                    # [FIX-C16]
+            self.memory.record_game({"game_id": self.game_id, "cycles": observation.get("cycle_id"),
+                                     "resolution": observation.get("resolution"), **self.watch.summary()})
         self.reported = True
 
     def report(self):
@@ -285,7 +488,11 @@ class CompetitiveGM:
                 "decisions": self.ledger["decisions"], "scenario": self.ledger["scenario"],
                 "rolls": self.ledger["rolls"], "verdicts": self.ledger["verdicts"],
                 "faults": self.ledger["faults"], "successions": self.ledger["successions"],
-                "human_requests": self.ledger["human_requests"]}
+                "human_requests": self.ledger["human_requests"],
+                # [FIX-C15] what my memory saw and learned in this game
+                "gm_memory": {"incidents": self.ledger["incidents"], "watch": self.watch.summary(),
+                              "playbook": self.memory.data.get("playbook"),
+                              "stall_thresholds": {k: self.memory.stall_threshold(k) for k in self.memory.data.get("norms", {})}}}
 
 
 class CompetitiveGMWorker:

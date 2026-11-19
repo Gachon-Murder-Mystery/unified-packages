@@ -8,6 +8,7 @@ recorded so analysis can use it as a covariate; adjust only after achievement ra
 """
 import json
 import random
+from itertools import product
 from pathlib import Path
 
 DATA = Path(__file__).with_name("v12_data.json")
@@ -73,19 +74,34 @@ def _pick(players, candidates, fits, received, prefer_conflict, rng):
     rng.shuffle(order)
     for player in order:
         aid = player["agent_id"]
-        chosen[aid] = {}
-        for tier in reversed(TIERS):
-            # A player never gets two missions that conflict with each other.
-            options = [m for m in candidates[aid][tier] if fits(player, m, tier)
-                       and not any(conflicts(m, mine) for mine in chosen[aid].values())]
-            if not options:
-                raise ValueError(f"no feasible {tier} mission for {aid}")
 
-            def score(mission_id):
-                cross = sum(conflicts(mission_id, other) for bid, picks in chosen.items() if bid != aid
-                            for other in picks.values())
-                return (-cross if prefer_conflict else 0, received.get(aid, []).count(mission_id), rng.random())
-            chosen[aid][tier] = min(options, key=score)
+        def score(mission_id):
+            cross = sum(conflicts(mission_id, other) for bid, picks in chosen.items() if bid != aid
+                        for other in picks.values())
+            return (-cross if prefer_conflict else 0, received.get(aid, []).count(mission_id), rng.random())
+
+        chosen[aid] = {}
+        try:
+            for tier in reversed(TIERS):
+                # A player never gets two missions that conflict with each other.
+                options = [m for m in candidates[aid][tier] if fits(player, m, tier)
+                           and not any(conflicts(m, mine) for mine in chosen[aid].values())]
+                if not options:
+                    raise LookupError(tier)
+                chosen[aid][tier] = min(options, key=score)
+        except LookupError:
+            # [FIX-C7] The greedy pick (상, then 중, then 하) dead-ends when every lower-tier
+            # candidate conflicts with a mission already picked, though another combination of
+            # the 3x3x3 candidates works. Only then search the combinations; the greedy result
+            # (and its random stream) is unchanged whenever it succeeds.
+            tiers = list(reversed(TIERS))
+            pools = [[m for m in candidates[aid][tier] if fits(player, m, tier)] for tier in tiers]
+            combos = [combo for combo in product(*pools)
+                      if not any(conflicts(a, b) for i, a in enumerate(combo) for b in combo[i + 1:])]
+            if not combos:
+                raise ValueError(f"no feasible mission set for {aid}") from None
+            best = min(combos, key=lambda combo: tuple(map(sum, zip(*(score(m) for m in combo)))))
+            chosen[aid] = dict(zip(tiers, best))
     return chosen
 
 

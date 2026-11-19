@@ -102,7 +102,9 @@ class ExternalEngine:
 
     @contextmanager
     def transaction(self):
-        with closing(sqlite3.connect(self.path, timeout=10)) as db:
+        # [FIX-A22] parallel players + heartbeat threads (and a synced folder) can hold the write lock
+        # for a while; wait instead of failing the request with 'database is locked'
+        with closing(sqlite3.connect(self.path, timeout=60)) as db:
             try:
                 db.execute('BEGIN IMMEDIATE')
                 yield db
@@ -250,7 +252,6 @@ class ExternalEngine:
             'SELECT state FROM experience_events WHERE agent_id=? ORDER BY rowid', (aid,))]
         return {'agent_id': aid, 'learning': l, 'experience_events': feedback,
                 'participation_history': copy.deepcopy(a.get('history',[])),
-                'peer_reputation': copy.deepcopy(a.get('peer_reputation',{})),
                 'gm_reports': copy.deepcopy(a.get('gm_reports',[]))}
 
     def session(self, db, d):
@@ -1018,6 +1019,16 @@ class ExternalEngine:
                 return self.learning(db, d, route.endswith('/update'))
             if route == 'pool/session':
                 return self.session(db, d)
+            if route in ('pool/share', 'pool/standings', 'games/sharing-close'):   # [FIX-A40]
+                from competitive import Rules
+                rules = Rules(self)
+                if route == 'games/sharing-close':
+                    return rules.close_sharing(db, d)
+                a = self.member(db, d)
+                if route == 'pool/share':
+                    return rules.share(db, a, d)
+                pid = d.get('pool_id', 'society')
+                return {'standings': rules.standings(db, pid)} | rules.my_standing_notes(db, a)
             if route == 'pool/feedback':
                 a = self.member(db,d)
                 gid = identifier(d.get('game_id'),'game_id')

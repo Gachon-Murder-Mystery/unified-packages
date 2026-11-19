@@ -69,8 +69,11 @@ def player_count(agents, history, requested=None):
 
 
 def choose_participants(agents, history, count, rng):
-    """The agents with the fewest games play; the rest (most played) sit out. Ties by seed."""
-    order = sorted(agents, key=lambda aid: (len(history.get(aid, [])), rng.random()))
+    """The agents with the fewest games play; the rest (most played) sit out. Ties by seed.
+    [FIX-A41] only completed games count: an aborted game (operator_stopped) is rerun, so counting it
+    left the v9 main campaign at 8-10 games per agent instead of 9 each."""
+    order = sorted(agents, key=lambda aid: (sum(1 for h in history.get(aid, []) if h.get("resolution") != "operator_stopped"),
+                                            rng.random()))
     return sorted(order[:count])
 
 

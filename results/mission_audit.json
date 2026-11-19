@@ -1,0 +1,1679 @@
+{
+ "games": 67,
+ "agent_missions": 2412,
+ "games_by_camp": {
+  "v9b": 16,
+  "v9a": 12,
+  "v8": 20,
+  "chk8": 2,
+  "v4-30c": 10,
+  "chk6": 2,
+  "chk2": 3,
+  "chk7": 2
+ },
+ "tier_by_era": {
+  "gpt-6-luna 상": [
+   360,
+   88
+  ],
+  "gpt-6-luna 중": [
+   360,
+   97
+  ],
+  "gpt-6-luna 하": [
+   360,
+   146
+  ],
+  "gpt-6.1-terra 상": [
+   444,
+   152
+  ],
+  "gpt-6.1-terra 중": [
+   444,
+   195
+  ],
+  "gpt-6.1-terra 하": [
+   444,
+   211
+  ]
+ },
+ "missions": {
+  "M37": {
+   "assigned": 54,
+   "achieved": 0,
+   "rate": 0.0,
+   "assigned_full": 52,
+   "achieved_full": 0,
+   "cycle_median": null,
+   "cycle_min": null,
+   "cycle_max": null,
+   "tiers": {
+    "하": 33,
+    "상": 21
+   },
+   "tier_rate": {
+    "하": 0.0,
+    "상": 0.0
+   },
+   "by_era": {
+    "gpt-6-luna": [
+     26,
+     0
+    ],
+    "gpt-6.1-terra": [
+     28,
+     0
+    ]
+   },
+   "condition": "상대만 이행하고 자신은 불이행한 교섭 2회"
+  },
+  "M24": {
+   "assigned": 39,
+   "achieved": 0,
+   "rate": 0.0,
+   "assigned_full": 38,
+   "achieved_full": 0,
+   "cycle_median": null,
+   "cycle_min": null,
+   "cycle_max": null,
+   "tiers": {
+    "하": 20,
+    "상": 19
+   },
+   "tier_rate": {
+    "하": 0.0,
+    "상": 0.0
+   },
+   "by_era": {
+    "gpt-6-luna": [
+     16,
+     0
+    ],
+    "gpt-6.1-terra": [
+     23,
+     0
+    ]
+   },
+   "condition": "준비 바로 다음에 판정 행동을 한 경우 8회"
+  },
+  "M17": {
+   "assigned": 34,
+   "achieved": 0,
+   "rate": 0.0,
+   "assigned_full": 31,
+   "achieved_full": 0,
+   "cycle_median": null,
+   "cycle_min": null,
+   "cycle_max": null,
+   "tiers": {
+    "상": 21,
+    "중": 11,
+    "하": 2
+   },
+   "tier_rate": {
+    "하": 0.0,
+    "중": 0.0,
+    "상": 0.0
+   },
+   "by_era": {
+    "gpt-6-luna": [
+     15,
+     0
+    ],
+    "gpt-6.1-terra": [
+     19,
+     0
+    ]
+   },
+   "condition": "서로 다른 3명이 나에게 가진 관계성 30 이하"
+  },
+  "M18": {
+   "assigned": 29,
+   "achieved": 0,
+   "rate": 0.0,
+   "assigned_full": 26,
+   "achieved_full": 0,
+   "cycle_median": null,
+   "cycle_min": null,
+   "cycle_max": null,
+   "tiers": {
+    "상": 29
+   },
+   "tier_rate": {
+    "상": 0.0
+   },
+   "by_era": {
+    "gpt-6-luna": [
+     15,
+     0
+    ],
+    "gpt-6.1-terra": [
+     14,
+     0
+    ]
+   },
+   "condition": "나에게 가진 관계성이 80 이상인 캐릭터와 20 이하인 캐릭터가 동시에 있음"
+  },
+  "O3": {
+   "assigned": 47,
+   "achieved": 1,
+   "rate": 0.021,
+   "assigned_full": 45,
+   "achieved_full": 1,
+   "cycle_median": 6,
+   "cycle_min": 6,
+   "cycle_max": 6,
+   "tiers": {
+    "중": 40,
+    "하": 7
+   },
+   "tier_rate": {
+    "하": 0.0,
+    "중": 0.025
+   },
+   "by_era": {
+    "gpt-6-luna": [
+     21,
+     0
+    ],
+    "gpt-6.1-terra": [
+     26,
+     1
+    ]
+   },
+   "condition": "다른 플레이어가 없는 기관실에 6사이클 연속 머무르고, 그동안 기관실 탐색 1회 이상 성공"
+  },
+  "M12": {
+   "assigned": 37,
+   "achieved": 1,
+   "rate": 0.027,
+   "assigned_full": 36,
+   "achieved_full": 1,
+   "cycle_median": 23,
+   "cycle_min": 23,
+   "cycle_max": 23,
+   "tiers": {
+    "상": 21,
+    "중": 16
+   },
+   "tier_rate": {
+    "중": 0.0,
+    "상": 0.048
+   },
+   "by_era": {
+    "gpt-6-luna": [
+     15,
+     0
+    ],
+    "gpt-6.1-terra": [
+     22,
+     1
+    ]
+   },
+   "condition": "서로 다른 6명이 나에게 가진 관계성 60 이상"
+  },
+  "M49": {
+   "assigned": 86,
+   "achieved": 3,
+   "rate": 0.035,
+   "assigned_full": 81,
+   "achieved_full": 2,
+   "cycle_median": 15,
+   "cycle_min": 15,
+   "cycle_max": 15,
+   "tiers": {
+    "하": 34,
+    "상": 52
+   },
+   "tier_rate": {
+    "하": 0.059,
+    "상": 0.019
+   },
+   "by_era": {
+    "gpt-6-luna": [
+     37,
+     1
+    ],
+    "gpt-6.1-terra": [
+     49,
+     2
+    ]
+   },
+   "condition": "15사이클 동안 질문 계열 행동을 한 번도 받지 않음"
+  },
+  "M04": {
+   "assigned": 66,
+   "achieved": 3,
+   "rate": 0.045,
+   "assigned_full": 64,
+   "achieved_full": 3,
+   "cycle_median": 6,
+   "cycle_min": 6,
+   "cycle_max": 7,
+   "tiers": {
+    "상": 41,
+    "중": 25
+   },
+   "tier_rate": {
+    "중": 0.08,
+    "상": 0.024
+   },
+   "by_era": {
+    "gpt-6-luna": [
+     30,
+     1
+    ],
+    "gpt-6.1-terra": [
+     36,
+     2
+    ]
+   },
+   "condition": "수하물 칸에 6사이클 연속 머무르고, 그동안 다른 플레이어가 수하물 칸에 들어오지 않음"
+  },
+  "O6": {
+   "assigned": 35,
+   "achieved": 2,
+   "rate": 0.057,
+   "assigned_full": 35,
+   "achieved_full": 2,
+   "cycle_median": 27.5,
+   "cycle_min": 27,
+   "cycle_max": 28,
+   "tiers": {
+    "상": 28,
+    "중": 7
+   },
+   "tier_rate": {
+    "중": 0.0,
+    "상": 0.071
+   },
+   "by_era": {
+    "gpt-6-luna": [
+     17,
+     1
+    ],
+    "gpt-6.1-terra": [
+     18,
+     1
+    ]
+   },
+   "condition": "GM이 지정한 간접 단서 3개를 모두 획득"
+  },
+  "M22": {
+   "assigned": 34,
+   "achieved": 2,
+   "rate": 0.059,
+   "assigned_full": 34,
+   "achieved_full": 2,
+   "cycle_median": 30.0,
+   "cycle_min": 30,
+   "cycle_max": 30,
+   "tiers": {
+    "중": 8,
+    "하": 24,
+    "상": 2
+   },
+   "tier_rate": {
+    "하": 0.042,
+    "중": 0.125,
+    "상": 0.0
+   },
+   "by_era": {
+    "gpt-6-luna": [
+     18,
+     0
+    ],
+    "gpt-6.1-terra": [
+     16,
+     2
+    ]
+   },
+   "condition": "30사이클 동안 질문 계열 0회"
+  },
+  "O5": {
+   "assigned": 36,
+   "achieved": 3,
+   "rate": 0.083,
+   "assigned_full": 34,
+   "achieved_full": 3,
+   "cycle_median": 21,
+   "cycle_min": 13,
+   "cycle_max": 30,
+   "tiers": {
+    "상": 20,
+    "중": 16
+   },
+   "tier_rate": {
+    "중": 0.125,
+    "상": 0.05
+   },
+   "by_era": {
+    "gpt-6-luna": [
+     14,
+     0
+    ],
+    "gpt-6.1-terra": [
+     22,
+     3
+    ]
+   },
+   "condition": "GM이 지정한 캐릭터 1명이 나에게 가진 관계성 85 이상"
+  },
+  "M08": {
+   "assigned": 55,
+   "achieved": 5,
+   "rate": 0.091,
+   "assigned_full": 54,
+   "achieved_full": 4,
+   "cycle_median": 20,
+   "cycle_min": 20,
+   "cycle_max": 20,
+   "tiers": {
+    "상": 23,
+    "하": 32
+   },
+   "tier_rate": {
+    "하": 0.062,
+    "상": 0.13
+   },
+   "by_era": {
+    "gpt-6-luna": [
+     27,
+     0
+    ],
+    "gpt-6.1-terra": [
+     28,
+     5
+    ]
+   },
+   "condition": "GM이 지정한 플레이어와 20사이클 동안 같은 칸에 있지 않음"
+  },
+  "M31": {
+   "assigned": 37,
+   "achieved": 4,
+   "rate": 0.108,
+   "assigned_full": 36,
+   "achieved_full": 4,
+   "cycle_median": 11.5,
+   "cycle_min": 6,
+   "cycle_max": 21,
+   "tiers": {
+    "중": 15,
+    "상": 18,
+    "하": 4
+   },
+   "tier_rate": {
+    "하": 0.5,
+    "중": 0.133,
+    "상": 0.0
+   },
+   "by_era": {
+    "gpt-6-luna": [
+     14,
+     1
+    ],
+    "gpt-6.1-terra": [
+     23,
+     3
+    ]
+   },
+   "condition": "협박 성공 3회"
+  },
+  "O1": {
+   "assigned": 50,
+   "achieved": 6,
+   "rate": 0.12,
+   "assigned_full": 48,
+   "achieved_full": 6,
+   "cycle_median": 18.5,
+   "cycle_min": 4,
+   "cycle_max": 27,
+   "tiers": {
+    "상": 31,
+    "중": 19
+   },
+   "tier_rate": {
+    "중": 0.105,
+    "상": 0.129
+   },
+   "by_era": {
+    "gpt-6-luna": [
+     19,
+     2
+    ],
+    "gpt-6.1-terra": [
+     31,
+     4
+    ]
+   },
+   "condition": "금고 칸 탐색 성공 2회. 성공한 사이클에 금고 칸에 다른 플레이어가 없어야 함"
+  },
+  "O4": {
+   "assigned": 35,
+   "achieved": 5,
+   "rate": 0.143,
+   "assigned_full": 30,
+   "achieved_full": 5,
+   "cycle_median": 21,
+   "cycle_min": 15,
+   "cycle_max": 30,
+   "tiers": {
+    "중": 16,
+    "하": 15,
+    "상": 4
+   },
+   "tier_rate": {
+    "하": 0.2,
+    "중": 0.125,
+    "상": 0.0
+   },
+   "by_era": {
+    "gpt-6-luna": [
+     14,
+     4
+    ],
+    "gpt-6.1-terra": [
+     21,
+     1
+    ]
+   },
+   "condition": "서로 다른 캐릭터 4명이 나에게 가진 관계성 65 이상"
+  },
+  "M19": {
+   "assigned": 45,
+   "achieved": 8,
+   "rate": 0.178,
+   "assigned_full": 44,
+   "achieved_full": 7,
+   "cycle_median": 11.5,
+   "cycle_min": 7,
+   "cycle_max": 14,
+   "tiers": {
+    "상": 18,
+    "하": 27
+   },
+   "tier_rate": {
+    "하": 0.185,
+    "상": 0.167
+   },
+   "by_era": {
+    "gpt-6-luna": [
+     20,
+     3
+    ],
+    "gpt-6.1-terra": [
+     25,
+     5
+    ]
+   },
+   "condition": "처음 15사이클 안에 서로 다른 3명이 나에게 가진 관계성 60 이상"
+  },
+  "M21": {
+   "assigned": 38,
+   "achieved": 7,
+   "rate": 0.184,
+   "assigned_full": 38,
+   "achieved_full": 7,
+   "cycle_median": 30,
+   "cycle_min": 30,
+   "cycle_max": 30,
+   "tiers": {
+    "하": 10,
+    "중": 15,
+    "상": 13
+   },
+   "tier_rate": {
+    "하": 0.3,
+    "중": 0.2,
+    "상": 0.077
+   },
+   "by_era": {
+    "gpt-6-luna": [
+     17,
+     0
+    ],
+    "gpt-6.1-terra": [
+     21,
+     7
+    ]
+   },
+   "condition": "30사이클 동안 탐색 0회"
+  },
+  "M42": {
+   "assigned": 37,
+   "achieved": 7,
+   "rate": 0.189,
+   "assigned_full": 37,
+   "achieved_full": 7,
+   "cycle_median": 24,
+   "cycle_min": 21,
+   "cycle_max": 30,
+   "tiers": {
+    "상": 31,
+    "중": 6
+   },
+   "tier_rate": {
+    "중": 0.0,
+    "상": 0.226
+   },
+   "by_era": {
+    "gpt-6-luna": [
+     15,
+     2
+    ],
+    "gpt-6.1-terra": [
+     22,
+     5
+    ]
+   },
+   "condition": "GM이 지정한 장소의 단서를 얻고, 그 뒤 20사이클 동안 다른 플레이어가 그 단서를 얻지 못함"
+  },
+  "M30": {
+   "assigned": 31,
+   "achieved": 6,
+   "rate": 0.194,
+   "assigned_full": 30,
+   "achieved_full": 6,
+   "cycle_median": 17.5,
+   "cycle_min": 14,
+   "cycle_max": 25,
+   "tiers": {
+    "중": 13,
+    "하": 11,
+    "상": 7
+   },
+   "tier_rate": {
+    "하": 0.455,
+    "중": 0.077,
+    "상": 0.0
+   },
+   "by_era": {
+    "gpt-6-luna": [
+     15,
+     3
+    ],
+    "gpt-6.1-terra": [
+     16,
+     3
+    ]
+   },
+   "condition": "심문 성공 4회"
+  },
+  "M11": {
+   "assigned": 65,
+   "achieved": 14,
+   "rate": 0.215,
+   "assigned_full": 65,
+   "achieved_full": 14,
+   "cycle_median": 22.0,
+   "cycle_min": 13,
+   "cycle_max": 30,
+   "tiers": {
+    "상": 28,
+    "중": 8,
+    "하": 29
+   },
+   "tier_rate": {
+    "하": 0.276,
+    "중": 0.125,
+    "상": 0.179
+   },
+   "by_era": {
+    "gpt-6-luna": [
+     31,
+     9
+    ],
+    "gpt-6.1-terra": [
+     34,
+     5
+    ]
+   },
+   "condition": "다른 캐릭터가 없는 칸에서 탐문·탐색 단계 8회"
+  },
+  "M55": {
+   "assigned": 45,
+   "achieved": 10,
+   "rate": 0.222,
+   "assigned_full": 44,
+   "achieved_full": 9,
+   "cycle_median": 3.0,
+   "cycle_min": 2,
+   "cycle_max": 26,
+   "tiers": {
+    "상": 33,
+    "중": 12
+   },
+   "tier_rate": {
+    "중": 0.833,
+    "상": 0.0
+   },
+   "by_era": {
+    "gpt-6-luna": [
+     19,
+     3
+    ],
+    "gpt-6.1-terra": [
+     26,
+     7
+    ]
+   },
+   "condition": "한 번의 탐색으로 단서 2개 이상 얻기 2회"
+  },
+  "M46": {
+   "assigned": 57,
+   "achieved": 13,
+   "rate": 0.228,
+   "assigned_full": 55,
+   "achieved_full": 13,
+   "cycle_median": 13,
+   "cycle_min": 3,
+   "cycle_max": 27,
+   "tiers": {
+    "중": 31,
+    "하": 19,
+    "상": 7
+   },
+   "tier_rate": {
+    "하": 0.421,
+    "중": 0.129,
+    "상": 0.143
+   },
+   "by_era": {
+    "gpt-6-luna": [
+     25,
+     3
+    ],
+    "gpt-6.1-terra": [
+     32,
+     10
+    ]
+   },
+   "condition": "GM이 지정한 플레이어에게 심문·협박 성공 2회"
+  },
+  "M06": {
+   "assigned": 67,
+   "achieved": 16,
+   "rate": 0.239,
+   "assigned_full": 65,
+   "achieved_full": 15,
+   "cycle_median": 7.5,
+   "cycle_min": 5,
+   "cycle_max": 23,
+   "tiers": {
+    "상": 37,
+    "하": 24,
+    "중": 6
+   },
+   "tier_rate": {
+    "하": 0.208,
+    "중": 0.333,
+    "상": 0.243
+   },
+   "by_era": {
+    "gpt-6-luna": [
+     27,
+     2
+    ],
+    "gpt-6.1-terra": [
+     40,
+     14
+    ]
+   },
+   "condition": "침대 칸에 5사이클 연속 머무르는 동안 질문 계열을 한 번도 받지 않음"
+  },
+  "M43": {
+   "assigned": 32,
+   "achieved": 8,
+   "rate": 0.25,
+   "assigned_full": 31,
+   "achieved_full": 8,
+   "cycle_median": 19.0,
+   "cycle_min": 12,
+   "cycle_max": 25,
+   "tiers": {
+    "하": 13,
+    "중": 13,
+    "상": 6
+   },
+   "tier_rate": {
+    "하": 0.308,
+    "중": 0.231,
+    "상": 0.167
+   },
+   "by_era": {
+    "gpt-6-luna": [
+     18,
+     1
+    ],
+    "gpt-6.1-terra": [
+     14,
+     7
+    ]
+   },
+   "condition": "질문 응답으로 서로 다른 플레이어 3명에게 확실한 단서를 줌"
+  },
+  "M29": {
+   "assigned": 35,
+   "achieved": 10,
+   "rate": 0.286,
+   "assigned_full": 35,
+   "achieved_full": 10,
+   "cycle_median": 15.0,
+   "cycle_min": 8,
+   "cycle_max": 30,
+   "tiers": {
+    "하": 22,
+    "상": 13
+   },
+   "tier_rate": {
+    "하": 0.364,
+    "상": 0.154
+   },
+   "by_era": {
+    "gpt-6-luna": [
+     14,
+     4
+    ],
+    "gpt-6.1-terra": [
+     21,
+     6
+    ]
+   },
+   "condition": "서로 다른 캐릭터 7명에게 질문 계열 성공(1성공 이상)"
+  },
+  "M03": {
+   "assigned": 31,
+   "achieved": 9,
+   "rate": 0.29,
+   "assigned_full": 28,
+   "achieved_full": 7,
+   "cycle_median": 6,
+   "cycle_min": 6,
+   "cycle_max": 10,
+   "tiers": {
+    "중": 28,
+    "하": 3
+   },
+   "tier_rate": {
+    "하": 0.333,
+    "중": 0.286
+   },
+   "by_era": {
+    "gpt-6-luna": [
+     13,
+     0
+    ],
+    "gpt-6.1-terra": [
+     18,
+     9
+    ]
+   },
+   "condition": "주방 칸에 6사이클 연속 머무름"
+  },
+  "M09": {
+   "assigned": 33,
+   "achieved": 11,
+   "rate": 0.333,
+   "assigned_full": 32,
+   "achieved_full": 10,
+   "cycle_median": 10,
+   "cycle_min": 10,
+   "cycle_max": 10,
+   "tiers": {
+    "중": 13,
+    "하": 20
+   },
+   "tier_rate": {
+    "하": 0.45,
+    "중": 0.154
+   },
+   "by_era": {
+    "gpt-6-luna": [
+     17,
+     0
+    ],
+    "gpt-6.1-terra": [
+     16,
+     11
+    ]
+   },
+   "condition": "처음 10사이클 동안 출발 칸을 떠나지 않음"
+  },
+  "M14": {
+   "assigned": 55,
+   "achieved": 19,
+   "rate": 0.345,
+   "assigned_full": 51,
+   "achieved_full": 16,
+   "cycle_median": 13,
+   "cycle_min": 3,
+   "cycle_max": 28,
+   "tiers": {
+    "상": 29,
+    "중": 26
+   },
+   "tier_rate": {
+    "중": 0.462,
+    "상": 0.241
+   },
+   "by_era": {
+    "gpt-6-luna": [
+     23,
+     1
+    ],
+    "gpt-6.1-terra": [
+     32,
+     18
+    ]
+   },
+   "condition": "GM이 지정한 플레이어가 나에게 가진 관계성 70 이상"
+  },
+  "M07": {
+   "assigned": 52,
+   "achieved": 19,
+   "rate": 0.365,
+   "assigned_full": 50,
+   "achieved_full": 18,
+   "cycle_median": 24,
+   "cycle_min": 16,
+   "cycle_max": 29,
+   "tiers": {
+    "중": 40,
+    "하": 12
+   },
+   "tier_rate": {
+    "하": 0.25,
+    "중": 0.4
+   },
+   "by_era": {
+    "gpt-6-luna": [
+     29,
+     2
+    ],
+    "gpt-6.1-terra": [
+     23,
+     17
+    ]
+   },
+   "condition": "GM이 지정한 캐릭터와 같은 칸에서 사이클 10회를 보냄"
+  },
+  "M39": {
+   "assigned": 40,
+   "achieved": 15,
+   "rate": 0.375,
+   "assigned_full": 37,
+   "achieved_full": 14,
+   "cycle_median": 13,
+   "cycle_min": 10,
+   "cycle_max": 29,
+   "tiers": {
+    "상": 37,
+    "중": 3
+   },
+   "tier_rate": {
+    "중": 0.333,
+    "상": 0.378
+   },
+   "by_era": {
+    "gpt-6-luna": [
+     20,
+     6
+    ],
+    "gpt-6.1-terra": [
+     20,
+     9
+    ]
+   },
+   "condition": "상대가 먼저 넘긴 교섭 3회"
+  },
+  "M05": {
+   "assigned": 40,
+   "achieved": 16,
+   "rate": 0.4,
+   "assigned_full": 40,
+   "achieved_full": 16,
+   "cycle_median": 6.0,
+   "cycle_min": 3,
+   "cycle_max": 10,
+   "tiers": {
+    "중": 21,
+    "하": 19
+   },
+   "tier_rate": {
+    "하": 0.368,
+    "중": 0.429
+   },
+   "by_era": {
+    "gpt-6-luna": [
+     13,
+     6
+    ],
+    "gpt-6.1-terra": [
+     27,
+     10
+    ]
+   },
+   "condition": "전망 칸 탐색 성공 3회"
+  },
+  "M52": {
+   "assigned": 40,
+   "achieved": 17,
+   "rate": 0.425,
+   "assigned_full": 39,
+   "achieved_full": 17,
+   "cycle_median": 13,
+   "cycle_min": 3,
+   "cycle_max": 28,
+   "tiers": {
+    "하": 25,
+    "중": 15
+   },
+   "tier_rate": {
+    "하": 0.56,
+    "중": 0.2
+   },
+   "by_era": {
+    "gpt-6-luna": [
+     21,
+     14
+    ],
+    "gpt-6.1-terra": [
+     19,
+     3
+    ]
+   },
+   "condition": "한 번의 교섭으로 단서 3개 이상 받기"
+  },
+  "M50": {
+   "assigned": 39,
+   "achieved": 17,
+   "rate": 0.436,
+   "assigned_full": 35,
+   "achieved_full": 14,
+   "cycle_median": 15,
+   "cycle_min": 8,
+   "cycle_max": 24,
+   "tiers": {
+    "중": 37,
+    "하": 2
+   },
+   "tier_rate": {
+    "하": 0.5,
+    "중": 0.432
+   },
+   "by_era": {
+    "gpt-6-luna": [
+     17,
+     10
+    ],
+    "gpt-6.1-terra": [
+     22,
+     7
+    ]
+   },
+   "condition": "기관실에 총 8사이클 머무름"
+  },
+  "M54": {
+   "assigned": 51,
+   "achieved": 23,
+   "rate": 0.451,
+   "assigned_full": 47,
+   "achieved_full": 19,
+   "cycle_median": 11,
+   "cycle_min": 6,
+   "cycle_max": 29,
+   "tiers": {
+    "하": 51
+   },
+   "tier_rate": {
+    "하": 0.451
+   },
+   "by_era": {
+    "gpt-6-luna": [
+     22,
+     2
+    ],
+    "gpt-6.1-terra": [
+     29,
+     21
+    ]
+   },
+   "condition": "준 단서가 받은 단서보다 많은 교섭 2회 성사"
+  },
+  "M28": {
+   "assigned": 44,
+   "achieved": 20,
+   "rate": 0.455,
+   "assigned_full": 40,
+   "achieved_full": 18,
+   "cycle_median": 21.5,
+   "cycle_min": 10,
+   "cycle_max": 30,
+   "tiers": {
+    "중": 39,
+    "하": 5
+   },
+   "tier_rate": {
+    "하": 0.6,
+    "중": 0.436
+   },
+   "by_era": {
+    "gpt-6-luna": [
+     17,
+     5
+    ],
+    "gpt-6.1-terra": [
+     27,
+     15
+    ]
+   },
+   "condition": "같은 캐릭터에게 질문 5회"
+  },
+  "M45": {
+   "assigned": 48,
+   "achieved": 22,
+   "rate": 0.458,
+   "assigned_full": 47,
+   "achieved_full": 21,
+   "cycle_median": 19.0,
+   "cycle_min": 10,
+   "cycle_max": 30,
+   "tiers": {
+    "중": 36,
+    "하": 12
+   },
+   "tier_rate": {
+    "하": 0.5,
+    "중": 0.444
+   },
+   "by_era": {
+    "gpt-6-luna": [
+     22,
+     13
+    ],
+    "gpt-6.1-terra": [
+     26,
+     9
+    ]
+   },
+   "condition": "금고 칸에 총 10사이클 머무름"
+  },
+  "M53": {
+   "assigned": 40,
+   "achieved": 19,
+   "rate": 0.475,
+   "assigned_full": 39,
+   "achieved_full": 18,
+   "cycle_median": 15,
+   "cycle_min": 7,
+   "cycle_max": 26,
+   "tiers": {
+    "중": 24,
+    "하": 16
+   },
+   "tier_rate": {
+    "하": 0.562,
+    "중": 0.417
+   },
+   "by_era": {
+    "gpt-6-luna": [
+     21,
+     9
+    ],
+    "gpt-6.1-terra": [
+     19,
+     10
+    ]
+   },
+   "condition": "교섭으로 받은 단서 합계 5개 이상"
+  },
+  "M44": {
+   "assigned": 68,
+   "achieved": 33,
+   "rate": 0.485,
+   "assigned_full": 66,
+   "achieved_full": 32,
+   "cycle_median": 18,
+   "cycle_min": 4,
+   "cycle_max": 30,
+   "tiers": {
+    "중": 61,
+    "하": 7
+   },
+   "tier_rate": {
+    "하": 0.429,
+    "중": 0.492
+   },
+   "by_era": {
+    "gpt-6-luna": [
+     30,
+     5
+    ],
+    "gpt-6.1-terra": [
+     38,
+     28
+    ]
+   },
+   "condition": "GM이 지정한 플레이어에게 질문 계열 행동 4회"
+  },
+  "M25": {
+   "assigned": 41,
+   "achieved": 20,
+   "rate": 0.488,
+   "assigned_full": 38,
+   "achieved_full": 18,
+   "cycle_median": 20.0,
+   "cycle_min": 20,
+   "cycle_max": 28,
+   "tiers": {
+    "하": 21,
+    "상": 19,
+    "중": 1
+   },
+   "tier_rate": {
+    "하": 0.286,
+    "중": 1.0,
+    "상": 0.684
+   },
+   "by_era": {
+    "gpt-6-luna": [
+     21,
+     6
+    ],
+    "gpt-6.1-terra": [
+     20,
+     14
+    ]
+   },
+   "condition": "20사이클 연속, 매 이동 단계마다 다른 칸으로 이동"
+  },
+  "M23": {
+   "assigned": 45,
+   "achieved": 22,
+   "rate": 0.489,
+   "assigned_full": 38,
+   "achieved_full": 22,
+   "cycle_median": 30.0,
+   "cycle_min": 30,
+   "cycle_max": 30,
+   "tiers": {
+    "하": 29,
+    "중": 16
+   },
+   "tier_rate": {
+    "하": 0.483,
+    "중": 0.5
+   },
+   "by_era": {
+    "gpt-6-luna": [
+     18,
+     11
+    ],
+    "gpt-6.1-terra": [
+     27,
+     11
+    ]
+   },
+   "condition": "30사이클 동안 준비 0회"
+  },
+  "M02": {
+   "assigned": 37,
+   "achieved": 19,
+   "rate": 0.514,
+   "assigned_full": 36,
+   "achieved_full": 19,
+   "cycle_median": 15,
+   "cycle_min": 10,
+   "cycle_max": 29,
+   "tiers": {
+    "중": 34,
+    "하": 3
+   },
+   "tier_rate": {
+    "하": 0.667,
+    "중": 0.5
+   },
+   "by_era": {
+    "gpt-6-luna": [
+     16,
+     6
+    ],
+    "gpt-6.1-terra": [
+     21,
+     13
+    ]
+   },
+   "condition": "식당 칸에서 탐문·탐색 단계를 총 10회 보냄"
+  },
+  "M20": {
+   "assigned": 38,
+   "achieved": 22,
+   "rate": 0.579,
+   "assigned_full": 35,
+   "achieved_full": 22,
+   "cycle_median": 30.0,
+   "cycle_min": 30,
+   "cycle_max": 30,
+   "tiers": {
+    "하": 34,
+    "중": 4
+   },
+   "tier_rate": {
+    "하": 0.559,
+    "중": 0.75
+   },
+   "by_era": {
+    "gpt-6-luna": [
+     18,
+     14
+    ],
+    "gpt-6.1-terra": [
+     20,
+     8
+    ]
+   },
+   "condition": "30사이클 동안 협박 0회이고 교섭 성사 1회 이상"
+  },
+  "M34": {
+   "assigned": 33,
+   "achieved": 20,
+   "rate": 0.606,
+   "assigned_full": 31,
+   "achieved_full": 19,
+   "cycle_median": 15.0,
+   "cycle_min": 3,
+   "cycle_max": 25,
+   "tiers": {
+    "중": 23,
+    "상": 5,
+    "하": 5
+   },
+   "tier_rate": {
+    "하": 1.0,
+    "중": 0.652,
+    "상": 0.0
+   },
+   "by_era": {
+    "gpt-6-luna": [
+     15,
+     9
+    ],
+    "gpt-6.1-terra": [
+     18,
+     11
+    ]
+   },
+   "condition": "2성공 이상인 질문 3회"
+  },
+  "M32": {
+   "assigned": 36,
+   "achieved": 23,
+   "rate": 0.639,
+   "assigned_full": 36,
+   "achieved_full": 23,
+   "cycle_median": 11,
+   "cycle_min": 6,
+   "cycle_max": 24,
+   "tiers": {
+    "하": 10,
+    "중": 26
+   },
+   "tier_rate": {
+    "하": 0.9,
+    "중": 0.538
+   },
+   "by_era": {
+    "gpt-6-luna": [
+     15,
+     11
+    ],
+    "gpt-6.1-terra": [
+     21,
+     12
+    ]
+   },
+   "condition": "장소 탐색 성공 6회"
+  },
+  "M40": {
+   "assigned": 39,
+   "achieved": 25,
+   "rate": 0.641,
+   "assigned_full": 37,
+   "achieved_full": 24,
+   "cycle_median": 19,
+   "cycle_min": 11,
+   "cycle_max": 27,
+   "tiers": {
+    "중": 26,
+    "하": 13
+   },
+   "tier_rate": {
+    "하": 0.538,
+    "중": 0.692
+   },
+   "by_era": {
+    "gpt-6-luna": [
+     18,
+     7
+    ],
+    "gpt-6.1-terra": [
+     21,
+     18
+    ]
+   },
+   "condition": "용의자·흉기·장소 분류의 확실한 단서를 각 2개 이상 보유"
+  },
+  "M56": {
+   "assigned": 32,
+   "achieved": 23,
+   "rate": 0.719,
+   "assigned_full": 31,
+   "achieved_full": 23,
+   "cycle_median": 17,
+   "cycle_min": 6,
+   "cycle_max": 27,
+   "tiers": {
+    "상": 20,
+    "중": 12
+   },
+   "tier_rate": {
+    "중": 0.583,
+    "상": 0.8
+   },
+   "by_era": {
+    "gpt-6-luna": [
+     15,
+     9
+    ],
+    "gpt-6.1-terra": [
+     17,
+     14
+    ]
+   },
+   "condition": "교섭 이행 4회, 불이행 0회"
+  },
+  "M36": {
+   "assigned": 63,
+   "achieved": 47,
+   "rate": 0.746,
+   "assigned_full": 61,
+   "achieved_full": 45,
+   "cycle_median": 14,
+   "cycle_min": 5,
+   "cycle_max": 30,
+   "tiers": {
+    "상": 29,
+    "하": 32,
+    "중": 2
+   },
+   "tier_rate": {
+    "하": 0.625,
+    "중": 1.0,
+    "상": 0.862
+   },
+   "by_era": {
+    "gpt-6-luna": [
+     25,
+     13
+    ],
+    "gpt-6.1-terra": [
+     38,
+     34
+    ]
+   },
+   "condition": "양측 모두 이행한 교섭 3회"
+  },
+  "M41": {
+   "assigned": 38,
+   "achieved": 29,
+   "rate": 0.763,
+   "assigned_full": 35,
+   "achieved_full": 27,
+   "cycle_median": 13,
+   "cycle_min": 3,
+   "cycle_max": 30,
+   "tiers": {
+    "중": 29,
+    "하": 9
+   },
+   "tier_rate": {
+    "하": 0.889,
+    "중": 0.724
+   },
+   "by_era": {
+    "gpt-6-luna": [
+     18,
+     12
+    ],
+    "gpt-6.1-terra": [
+     20,
+     17
+    ]
+   },
+   "condition": "간접 단서 4개 획득"
+  },
+  "M38": {
+   "assigned": 37,
+   "achieved": 29,
+   "rate": 0.784,
+   "assigned_full": 35,
+   "achieved_full": 27,
+   "cycle_median": 16,
+   "cycle_min": 6,
+   "cycle_max": 27,
+   "tiers": {
+    "하": 18,
+    "상": 19
+   },
+   "tier_rate": {
+    "하": 0.778,
+    "상": 0.789
+   },
+   "by_era": {
+    "gpt-6-luna": [
+     19,
+     11
+    ],
+    "gpt-6.1-terra": [
+     18,
+     18
+    ]
+   },
+   "condition": "서로 다른 3명과 교섭 성사"
+  },
+  "M48": {
+   "assigned": 72,
+   "achieved": 58,
+   "rate": 0.806,
+   "assigned_full": 67,
+   "achieved_full": 56,
+   "cycle_median": 19.0,
+   "cycle_min": 5,
+   "cycle_max": 30,
+   "tiers": {
+    "상": 48,
+    "하": 24
+   },
+   "tier_rate": {
+    "하": 0.833,
+    "상": 0.792
+   },
+   "by_era": {
+    "gpt-6-luna": [
+     36,
+     34
+    ],
+    "gpt-6.1-terra": [
+     36,
+     24
+    ]
+   },
+   "condition": "다른 캐릭터에게서 질문 계열 행동을 받은 횟수 6회"
+  },
+  "M01": {
+   "assigned": 38,
+   "achieved": 32,
+   "rate": 0.842,
+   "assigned_full": 36,
+   "achieved_full": 31,
+   "cycle_median": 17.0,
+   "cycle_min": 8,
+   "cycle_max": 27,
+   "tiers": {
+    "하": 24,
+    "상": 14
+   },
+   "tier_rate": {
+    "하": 0.75,
+    "상": 1.0
+   },
+   "by_era": {
+    "gpt-6-luna": [
+     16,
+     15
+    ],
+    "gpt-6.1-terra": [
+     22,
+     17
+    ]
+   },
+   "condition": "8개 칸을 모두 1회 이상 방문"
+  },
+  "M51": {
+   "assigned": 30,
+   "achieved": 26,
+   "rate": 0.867,
+   "assigned_full": 29,
+   "achieved_full": 25,
+   "cycle_median": 7.5,
+   "cycle_min": 3,
+   "cycle_max": 28,
+   "tiers": {
+    "상": 6,
+    "중": 9,
+    "하": 15
+   },
+   "tier_rate": {
+    "하": 1.0,
+    "중": 0.889,
+    "상": 0.5
+   },
+   "by_era": {
+    "gpt-6-luna": [
+     15,
+     11
+    ],
+    "gpt-6.1-terra": [
+     15,
+     15
+    ]
+   },
+   "condition": "확실한 단서 N개 획득(탐색·질문 계열 모두 셈). 기준 난이도는 N으로 정함: N=3 하, N=5 중, N=8 상"
+  },
+  "M33": {
+   "assigned": 45,
+   "achieved": 41,
+   "rate": 0.911,
+   "assigned_full": 44,
+   "achieved_full": 40,
+   "cycle_median": 7,
+   "cycle_min": 3,
+   "cycle_max": 27,
+   "tiers": {
+    "하": 45
+   },
+   "tier_rate": {
+    "하": 0.911
+   },
+   "by_era": {
+    "gpt-6-luna": [
+     18,
+     18
+    ],
+    "gpt-6.1-terra": [
+     27,
+     23
+    ]
+   },
+   "condition": "서로 다른 3개 칸에서 탐색 성공"
+  },
+  "M10": {
+   "assigned": 81,
+   "achieved": 79,
+   "rate": 0.975,
+   "assigned_full": 76,
+   "achieved_full": 74,
+   "cycle_median": 14,
+   "cycle_min": 6,
+   "cycle_max": 28,
+   "tiers": {
+    "상": 55,
+    "하": 24,
+    "중": 2
+   },
+   "tier_rate": {
+    "하": 1.0,
+    "중": 1.0,
+    "상": 0.964
+   },
+   "by_era": {
+    "gpt-6-luna": [
+     33,
+     31
+    ],
+    "gpt-6.1-terra": [
+     48,
+     48
+    ]
+   },
+   "condition": "캐릭터가 4명 이상 있는 칸에서 탐문·탐색 단계 5회"
+  }
+ },
+ "never_assigned": {
+  "O2": {
+   "feasible_30c": false,
+   "why": "needs at least 41 cycles, game has 30",
+   "condition": "처음 얻은 확실한 단서를 40사이클 동안 보유 공개·교섭 이전·응답 공개하지 않음"
+  },
+  "O7": {
+   "feasible_30c": false,
+   "why": "needs at least 40 cycles, game has 30",
+   "condition": "40사이클 동안 심문·협박 0회"
+  },
+  "M13": {
+   "feasible_30c": false,
+   "why": "needs 3 npcs, game has 0",
+   "condition": "NPC 3명이 나에게 가진 관계성 70 이상"
+  },
+  "M15": {
+   "feasible_30c": false,
+   "why": "needs 1 npcs, game has 0",
+   "condition": "GM이 지정한 NPC가 나에게 가진 관계성 80 이상"
+  },
+  "M16": {
+   "feasible_30c": false,
+   "why": "needs at least 40 cycles, game has 30",
+   "condition": "40사이클 동안 어느 캐릭터도 나에게 가진 관계성이 30 이하로 떨어지지 않음"
+  },
+  "M26": {
+   "feasible_30c": false,
+   "why": "needs at least 40 cycles, game has 30",
+   "condition": "40사이클 동안 보유 공개 0회"
+  },
+  "M27": {
+   "feasible_30c": false,
+   "why": "needs at least 40 cycles, game has 30",
+   "condition": "40사이클 동안 교섭 제안·수락 0회"
+  },
+  "M35": {
+   "feasible_30c": false,
+   "why": "needs 1 npcs, game has 0",
+   "condition": "NPC 대상 질문·심문 성공 6회"
+  },
+  "M47": {
+   "feasible_30c": false,
+   "why": "needs 1 npcs, game has 0",
+   "condition": "GM이 지정한 NPC에게 질문 성공 3회"
+  }
+ }
+}

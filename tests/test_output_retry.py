@@ -15,6 +15,12 @@ class RetryTest(unittest.TestCase):
             cls=sys.modules['agent'].LLMAgent
             class Cut(Exception):body={'code':'llm_truncated'}
             a=object.__new__(cls);a._log=Mock();a.client=Mock()
+            # [FIX-B11] default: the first budget is the reasoning cap, no escalation
+            a.client.request.side_effect=Cut()
+            with self.assertRaises(sys.modules['llm'].GatewayError):a._request_complete('s','u',4096)
+            self.assertEqual([c.kwargs['budget'] for c in a.client.request.call_args_list],[4096])
+            # an explicit cap restores the old escalation, never past the cap
+            a.client.reset_mock();a.max_budget=16384
             a.client.request.side_effect=[Cut(),Cut(),('COMPLETE',{})]
             self.assertEqual(a._request_complete('s','u',4096)[0],'COMPLETE')
             self.assertEqual([c.kwargs['budget'] for c in a.client.request.call_args_list],[4096,8192,16384])

@@ -104,7 +104,7 @@
    },
    "skill": {
     "name": "거래의 달인",
-    "effect": "교섭 기준선 −1"
+    "effect": "설득 기준선 −1"
    }
   },
   {
@@ -1120,6 +1120,81 @@
    ],
    "harder": [],
    "interference": "O3 열차 멈추기와 충돌",
+   "designate": null,
+   "designate_count": 0
+  },
+  {
+   "id": "M52",
+   "name": "큰손 거래",
+   "condition": "한 번의 교섭으로 단서 3개 이상 받기",
+   "base": "중",
+   "easier": [
+    "사업가",
+    "E"
+   ],
+   "harder": [],
+   "interference": "교섭 거절",
+   "designate": null,
+   "designate_count": 0
+  },
+  {
+   "id": "M53",
+   "name": "정보 중개상",
+   "condition": "교섭으로 받은 단서 합계 5개 이상",
+   "base": "중",
+   "easier": [
+    "사업가",
+    "사기꾼"
+   ],
+   "harder": [],
+   "interference": "교섭 거절",
+   "designate": null,
+   "designate_count": 0
+  },
+  {
+   "id": "M54",
+   "name": "후한 손",
+   "condition": "준 단서가 받은 단서보다 많은 교섭 2회 성사",
+   "base": "하",
+   "easier": [
+    "F",
+    "교수"
+   ],
+   "harder": [],
+   "interference": "",
+   "designate": null,
+   "designate_count": 0
+  },
+  {
+   "id": "M55",
+   "name": "노련한 수색",
+   "condition": "한 번의 탐색으로 단서 2개 이상 얻기 2회",
+   "base": "상",
+   "easier": [
+    "탐정",
+    "의사",
+    "상속인",
+    "기술자",
+    "요리사"
+   ],
+   "harder": [],
+   "interference": "같은 칸을 먼저 탐색",
+   "designate": null,
+   "designate_count": 0
+  },
+  {
+   "id": "M56",
+   "name": "신의 있는 상인",
+   "condition": "교섭 이행 4회, 불이행 0회",
+   "base": "상",
+   "easier": [
+    "J",
+    "사업가"
+   ],
+   "harder": [
+    "P"
+   ],
+   "interference": "교섭 거절",
    "designate": null,
    "designate_count": 0
   }

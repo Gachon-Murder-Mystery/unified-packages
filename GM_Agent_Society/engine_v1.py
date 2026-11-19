@@ -11,10 +11,14 @@ never reads the promoted agent's player memory or the previous GM's ledger.
 """
 import json
 import random
+import time
 import urllib.error
 import urllib.request
 
 from .contracts import ContractError
+
+SOCKET_RETRY_WAITS = (1, 2, 4, 8, 15, 30)   # [FIX-I17] about one minute in all
+TRANSIENT_SOCKET_ERRORS = (10055, 10048)   # no buffer space / address in use (Windows)
 
 ENGINE_VERSION = "engine-integration-v1"
 NAMESPACE = "gm-v1"
@@ -46,16 +50,24 @@ class EngineV1Client:
         body = json.dumps(self.credentials | data, ensure_ascii=False, allow_nan=False).encode()
         request = urllib.request.Request(f"{self.base_url}/integration/v1/{route}", body,
                                          {"Content-Type": "application/json", "X-GM-Client": "local"})
-        try:
-            with urllib.request.urlopen(request, timeout=self.timeout) as response:
-                return json.load(response)
-        except urllib.error.HTTPError as exc:
-            with exc:
-                try:
-                    payload = json.load(exc)
-                except ValueError:
-                    payload = {}
-            raise EngineV1Error(exc.code, payload) from exc
+        for wait in SOCKET_RETRY_WAITS + (None,):
+            try:
+                with urllib.request.urlopen(request, timeout=self.timeout) as response:
+                    return json.load(response)
+            except urllib.error.HTTPError as exc:   # the engine answered: one request, never resent
+                with exc:
+                    try:
+                        payload = json.load(exc)
+                    except ValueError:
+                        payload = {}
+                raise EngineV1Error(exc.code, payload) from exc
+            except urllib.error.URLError as exc:
+                # [FIX-I17] 2026-11-12 v9-main2 seed 11: after 10 games Windows ran out of socket buffers
+                # (WinError 10055) while opening a connection. Nothing reached the engine, so sending again
+                # after a short wait is safe; any other error is raised as before.
+                if wait is None or getattr(exc.reason, "winerror", None) not in TRANSIENT_SOCKET_ERRORS:
+                    raise
+                time.sleep(wait)
 
 
 def _estimate(card, tag):

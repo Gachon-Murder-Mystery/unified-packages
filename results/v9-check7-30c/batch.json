@@ -1,0 +1,102 @@
+{
+  "config": {
+    "start_seed": 1,
+    "isolated": false
+  },
+  "target_count": 2,
+  "attempts": [
+    {
+      "seed": 1,
+      "status": "completed",
+      "directory": "F:\\multi_agent_AI_Game\\unified-packages-v9\\runs\\v9-check7-30c\\seed-1\\attempt-1",
+      "started_at": 1794297274.5420346,
+      "conditions": {
+        "backend": "codex",
+        "model": "gpt-6.1-terra via Codex CLI (reasoning medium)",
+        "deadline": 30,
+        "time_limit": null,
+        "unsolved_score": -10,
+        "parallel": true,
+        "question_timeout": 600,
+        "trade_timeout": 600,
+        "interaction_order": "simultaneous",
+        "clue_flow": "boosted"
+      },
+      "returncode": 0,
+      "finished_at": 1794302119.1746547,
+      "game_id": "0e88d7b6-aea0-48de-ba8c-ea9e0b2b6db0",
+      "resolution": "winner",
+      "cycles": 30,
+      "winners": [
+        {
+          "agent_id": "society:2c55f6ca74fb42e5899894d1ffcc27db",
+          "character_id": 4,
+          "winner": true,
+          "rank": 1,
+          "guess": {
+            "suspect": 8,
+            "weapon": 2,
+            "place": 3
+          }
+        },
+        {
+          "agent_id": "society:0380e3d2a9504691b9f0ebb8359a0b4e",
+          "character_id": 1,
+          "winner": true,
+          "rank": 2,
+          "guess": {
+            "suspect": 8,
+            "weapon": 2,
+            "place": 3
+          }
+        }
+      ],
+      "model_calls": 1551,
+      "model_fallbacks": 0,
+      "full_record_file": "F:\\multi_agent_AI_Game\\unified-packages-v9\\runs\\0e88d7b6-aea0-48de-ba8c-ea9e0b2b6db0\\full-record.json",
+      "summary_file": "F:\\multi_agent_AI_Game\\unified-packages-v9\\runs\\0e88d7b6-aea0-48de-ba8c-ea9e0b2b6db0\\summary.json"
+    },
+    {
+      "seed": 2,
+      "status": "completed",
+      "directory": "F:\\multi_agent_AI_Game\\unified-packages-v9\\runs\\v9-check7-30c\\seed-2\\attempt-1",
+      "started_at": 1794302119.1984465,
+      "conditions": {
+        "backend": "codex",
+        "model": "gpt-6.1-terra via Codex CLI (reasoning medium)",
+        "deadline": 30,
+        "time_limit": null,
+        "unsolved_score": -10,
+        "parallel": true,
+        "question_timeout": 600,
+        "trade_timeout": 600,
+        "interaction_order": "simultaneous",
+        "clue_flow": "boosted"
+      },
+      "returncode": 0,
+      "finished_at": 1794308448.5216463,
+      "game_id": "e27aa31e-7377-45e6-81a7-d18b68debf19",
+      "resolution": "winner",
+      "cycles": 30,
+      "winners": [
+        {
+          "agent_id": "society:9a6ec4a6b2fa4d3fad910c871587840a",
+          "character_id": 2,
+          "winner": true,
+          "rank": 1,
+          "guess": {
+            "suspect": 3,
+            "weapon": 5,
+            "place": 3
+          }
+        }
+      ],
+      "model_calls": 1872,
+      "model_fallbacks": 2,
+      "full_record_file": "F:\\multi_agent_AI_Game\\unified-packages-v9\\runs\\e27aa31e-7377-45e6-81a7-d18b68debf19\\full-record.json",
+      "summary_file": "F:\\multi_agent_AI_Game\\unified-packages-v9\\runs\\e27aa31e-7377-45e6-81a7-d18b68debf19\\summary.json"
+    }
+  ],
+  "pool_db": "F:\\multi_agent_AI_Game\\unified-packages-v9\\runs\\v9-check7-30c\\pool.sqlite3",
+  "memory_dir": "F:\\multi_agent_AI_Game\\unified-packages-v9\\runs\\v9-check7-30c\\agent-memory"
+}

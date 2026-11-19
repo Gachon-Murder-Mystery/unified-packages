@@ -63,6 +63,8 @@ class CompetitiveGMTests(unittest.TestCase):
         self.dir.cleanup()
 
     def start(self, seed=7, **rules):
+        # These GM tests drive v1.3 immediate actions; the engine default is `simultaneous` since 2026-11-07.
+        rules.setdefault("interaction_order", "immediate")
         pool = self.operator.call("pool/bootstrap", pool_id="society")
         created = self.operator.call("games/create", pool_id="society", game_id="g-" + uuid.uuid4().hex[:8],
                                      seed=seed, rules=rules)

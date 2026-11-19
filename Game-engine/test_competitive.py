@@ -21,7 +21,10 @@ class CompetitiveTests(unittest.TestCase):
         self.e = ExternalEngine(self.path, lambda: self.now)
         self.op = {'operator_token': self.e.operator_token}
         self.pool = self.call('pool/bootstrap', self.op)
-        self.new = self.call('games/create', self.op, game_id='case', seed=7)
+        # v1.3 behaviour tests: the engine default is simultaneous since 2026-11-07; these keep
+        # checking the immediate mode (test_simultaneous.py covers the default).
+        # FIX-A29: these v1.3 tests also run without MBTI corrections (test_mbti_rules.py covers them)
+        self.new = self.call('games/create', self.op, game_id='case', seed=7, rules={'interaction_order': 'immediate', 'mbti_rules': False, 'orchestration': 'engine'})  # FIX-A33: v1.3 auto mode
         self.gm = self.new['controller'] | {'game_id': 'case'}
         self.ids = [a['agent_id'] for a in self.pool['agents'] if a['pool_role'] == 'player'][:3]
         self.activation = [{'agent_id': a, 'character_id': i} for i, a in enumerate(self.ids)]
@@ -119,7 +122,7 @@ class CompetitiveTests(unittest.TestCase):
     def test_catalog_missions_and_sheet_contract(self):
         c = self.call('catalog')
         self.assertEqual(c['ruleset'], SPEC)
-        self.assertEqual(len(c['characters']), 12); self.assertEqual(len(c['missions']), 58)
+        self.assertEqual(len(c['characters']), 12); self.assertEqual(len(c['missions']), 63)  # 58 + M52-M56 (FIX-A21)
         self.assertEqual(c['default_rules']['deadline_cycles'], 120)
     def test_initial_only_roles_no_action_tasks(self):
         self.error('conflict', lambda: self.call('gm/command', self.gm, **(self.plan | {'command_id': 'late'})))
@@ -165,7 +168,7 @@ class CompetitiveTests(unittest.TestCase):
         self.assertTrue(all(x==50 for x in self.call('agent/observe',self.pc(a))['relationships'].values()))
         with self.e.transaction() as db:
             g=self.e.load(db,'games','case','id'); Rules(self.e).relation(g,0,1,10,'fixture'); self.e.put(db,'games','case',g,'id')
-        self.assertEqual(self.call('agent/observe',self.pc(a))['relationships']['1'],65)
+        self.assertEqual(self.call('agent/observe',self.pc(a))['relationships']['1'],60)   # FIX-A37: no E/I multiplier by default
         self.assertEqual(self.call('agent/observe',self.pc(b))['relationships']['0'],50)
         self.assertNotIn('relationships',self.call('gm/observe',self.gm))
     def test_relationship_modifies_question_not_pressure_or_mbti_dice(self):
@@ -362,6 +365,74 @@ class CompetitiveTests(unittest.TestCase):
         self.assertEqual(report['score'],1)
         self.assertTrue(report['success'])
         self.assertEqual(self.call('gm/command',self.gm,**data),report)
+    def test_gm_tells_each_player_its_result_privately(self):
+        """FIX-A36: the engine writes one result notice per player from the official scores; the GM
+        publishes it (cannot rewrite it); only the addressee gets it; others' rows are anonymous."""
+        dead, done = self.ids[0], self.ids[1]
+        def setup(g):
+            g['resolution'] = 'deadline'
+            g['players'][dead]['mode'] = 'corpse'
+            g['characters'][str(g['players'][dead]['character_id'])]['mode'] = 'corpse'
+            g['players'][dead]['missions'][2]['achieved'] = True        # tier 상 (30) kept after a wrong accusation
+            g['players'][done]['missions'][0]['achieved'] = True        # voided: unsolved survivor
+        self.mutate(setup)
+        self.call('gm/command', self.gm, operation='FINISH', command_id='end-board')
+        pending = [x for x in self.call('gm/observe', self.gm)['pending_announcements'] if x['kind'] == 'scoreboard']
+        self.assertEqual(len(pending), len(self.ids))
+        self.assertNotIn('scoreboard', self.state()['final_feedback'][dead])          # not delivered until the GM tells
+        self.error('invalid_input', lambda: self.call('gm/command', self.gm, operation='ANNOUNCE', command_id='rw',
+                                                      ref='scoreboard:' + dead, kind='scoreboard', data={'my_rank': 1}))
+        for item in pending:
+            self.call('gm/command', self.gm, operation='ANNOUNCE', command_id='a-' + item['ref'][-6:], ref=item['ref'], kind='scoreboard')
+        fb = self.state()['final_feedback']
+        board = fb[dead]['scoreboard']
+        self.assertEqual((board['players'], board['my_rank'], board['my_tied'], board['my_score']), (len(self.ids), 1, 1, 10))  # -20 + 30
+        top = board['rows'][0]
+        self.assertEqual((top['outcome'], top['base'], top['missions'], top['me']), ('wrong_accusation_dead', -20, 30, True))
+        mine = [r for r in fb[done]['scoreboard']['rows'] if r['me']]
+        self.assertEqual((mine[0]['outcome'], mine[0]['score'], mine[0]['missions_voided'], mine[0]['missions_achieved']),
+                         ('unsolved_survivor', -10, True, 1))
+        self.assertEqual((fb[done]['scoreboard']['my_rank'], fb[done]['scoreboard']['my_tied']), (2, len(self.ids) - 1))  # shared rank
+        text = json.dumps(fb[done]['scoreboard'], ensure_ascii=False)
+        for aid in self.ids:
+            if aid != done:                          # the notice names only its addressee (in its ref)
+                self.assertNotIn(aid, text)
+        for leak in ('character_id', 'job', 'mbti', 'agent'):
+            self.assertNotIn(leak, text)
+        public = self.call('agent/observe', self.pc(done))['announcements']
+        self.assertFalse(any(x.get('kind') == 'scoreboard' for x in public))       # never in the public list
+        events = self.call('events', self.pc(done))['events']
+        mine_ev = [e for e in events if e['type'] == 'announcement' and e['payload'].get('kind') == 'scoreboard']
+        self.assertEqual([e['payload']['ref'] for e in mine_ev], ['scoreboard:' + done])   # only my own notice
+
+    def test_relationship_reports_are_relayed_to_the_gm_only(self):
+        """FIX-A35: an agent's own relationship scores reach the GM as a GM-only event; the engine keeps
+        no relationship state from them and players never see them."""
+        me, other = self.ids[0], self.ids[1]
+        before = copy.deepcopy(self.state()['relationships'])
+        self.assertEqual(self.call('relations/report', self.pc(me), scores={other: 62.5})['relayed'], 1)
+        gm_events = [e for e in self.call('events', self.gm)['events'] if e['type'] == 'relations_reported']
+        self.assertEqual(gm_events[-1]['payload'], {'agent_id': me, 'cycle': self.state()['cycle_id'], 'scores': {other: 62.5}})
+        for aid in (me, other):
+            self.assertFalse(any(e['type'] == 'relations_reported' for e in self.call('events', self.pc(aid))['events']))
+        self.assertEqual(self.state()['relationships'], before)             # no rule input
+        seen = json.dumps(self.call('agent/observe', self.pc(other)))
+        self.assertNotIn('62.5', seen)
+        self.assertNotIn('relations_reported', seen)
+        for bad in ({me: 50}, {'society:stranger': 50}, {other: 101}, {other: '70'}, {}):
+            self.error('invalid_input', lambda bad=bad: self.call('relations/report', self.pc(me), scores=bad))
+
+    def test_report_records_the_gms_relationship_summary(self):
+        self.mutate(lambda g:g.update(resolution='deadline'))
+        self.call('gm/command',self.gm,operation='FINISH',command_id='legitimate-end')
+        event=self.state()['events'][-1]['event_id']
+        summary={'kind':'reported_by_agents','latest':{self.ids[0]:{self.ids[1]:62.5}}}
+        report=self.call('gm/command',self.gm,operation='REPORT',command_id='report',
+                         metrics={'completion':1,'balance':None,'exploration':1,'record':1},evidence=[event],
+                         reported_relationships=summary)
+        self.assertEqual(report['reported_relationships'],summary)
+        self.assertEqual(self.state()['gm_report']['score'],1)                # the summary does not change the score
+
     def test_relationship_graph_scope_and_operator_export(self):
         graph=self.call('relationships/graph',self.pc(self.ids[0]))
         self.assertEqual(len(graph['edges']),11)
@@ -443,8 +514,11 @@ class CompetitiveTests(unittest.TestCase):
             if mid=='M22':acts=[x for x in acts if x['kind']!='question']
             if mid=='M48':acts.extend(row('question',0,'question')|{'actor':1} for _ in range(6))
             g['activity']=acts
+            mine,theirs=(['a','b'],['x']) if mid=='M54' else (['a'],['x','y','z'])  # FIX-A21 bundles
             g['trades']={str(i):{'proposer':aid,'recipient':'peer:'+str(i),'accepted':True,'status':'settled',
-                'fulfilled':{aid:True,'peer:'+str(i):True},'first_sender':'peer:'+str(i),'cycle':1} for i in range(3)}
+                'fulfilled':{aid:True,'peer:'+str(i):True},'first_sender':'peer:'+str(i),'cycle':1,
+                'offers':{aid:mine,'peer:'+str(i):theirs}} for i in range(4)}
+            p['multi_finds']=2
             if mid=='M37':
                 for x in g['trades'].values():x['fulfilled'][aid]=False
             if mid=='M27':g['trades']={}
